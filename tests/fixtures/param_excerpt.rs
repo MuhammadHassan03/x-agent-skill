@@ -1,3 +1,5 @@
+// Excerpt of home-mixer/params/param.rs from https://github.com/xai-org/x-algorithm (Apache-2.0),
+// commit 74d49a4, kept as a parser test fixture. Copyright belongs to its authors.
 param!(FavoriteWeight, f64, "rust_home_mixer_favorite_weight", 0.66);
 param!(ReplyWeight, f64, "rust_home_mixer_reply_weight", 5.0);
 param!(

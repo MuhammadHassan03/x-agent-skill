@@ -42,7 +42,8 @@ FREE_LIMIT = 280
 PREMIUM_LIMIT = 25000
 URL_WEIGHT = 23
 DEFAULT_WEIGHT = 2
-# (start, end) inclusive, weight 1. Vendored from twitter-text config/v3.json.
+# (start, end) inclusive, weight 1. Vendored from twitter-text config/v3.json
+# (https://github.com/twitter/twitter-text, Apache-2.0; ranges and the 23-character URL weight only).
 LIGHT_RANGES: Tuple[Tuple[int, int], ...] = (
     (0, 4351),
     (8192, 8205),

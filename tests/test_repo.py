@@ -20,7 +20,7 @@ def text_files():
     for base, dirs, files in os.walk(ROOT):
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for f in files:
-            if os.path.splitext(f)[1] in TEXT_EXT or f in ("LICENSE", "NOTICE", "CODEOWNERS"):
+            if os.path.splitext(f)[1] in TEXT_EXT or f in ("LICENSE", "CODEOWNERS"):
                 yield os.path.join(base, f)
 
 
