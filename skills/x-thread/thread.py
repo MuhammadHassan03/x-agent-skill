@@ -132,7 +132,7 @@ def build(text: str, number: bool = False, pack: bool = False) -> Dict[str, obje
             cleaned.append(p)
     if not cleaned and links:
         raise ValueError("draft contains only links; nothing to thread")
-    link_line = ("Links:\n" + "\n".join(dict.fromkeys(links))) if links else ""
+    link_line = ((label or "Links:") + "\n" + "\n".join(dict.fromkeys(links))) if links else ""
     reserve = 8 if number else 0     # room for "12/12 "
     budget = LIMIT - reserve
     posts: List[str] = []
