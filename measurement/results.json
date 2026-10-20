@@ -1,0 +1,122 @@
+{
+  "corpus": "twitter100m (ends 2023-04); tweets joined to users on handle",
+  "window": [
+    "2019-01-01",
+    "2022-12-31"
+  ],
+  "tweet_rows_read": 6445195,
+  "rows_matched_to_users": 6445195,
+  "match_rate": 1.0,
+  "accounts_used": 1500,
+  "tweets_scored": 270880,
+  "hits_ge_3x": 37861,
+  "misses_lt_1x": 131549,
+  "auc_within_account_hits_vs_misses": {
+    "hook_score": {
+      "mean": 0.4998,
+      "ci95": [
+        0.4938,
+        0.5057
+      ],
+      "n_accounts": 1402
+    },
+    "full_postscore": {
+      "mean": 0.4753,
+      "ci95": [
+        0.4685,
+        0.4823
+      ],
+      "n_accounts": 1402
+    },
+    "baseline_length_only": {
+      "mean": 0.5922,
+      "ci95": [
+        0.5838,
+        0.6003
+      ],
+      "n_accounts": 1402
+    },
+    "baseline_has_number_in_first_line": {
+      "mean": 0.5266,
+      "ci95": [
+        0.5214,
+        0.5316
+      ],
+      "n_accounts": 1402
+    }
+  },
+  "rule_effect_log2_multiple_within_account": {
+    "link": {
+      "mean": 0.5945,
+      "ci95": [
+        0.533,
+        0.654
+      ],
+      "n_accounts": 1398
+    },
+    "bait": {
+      "mean": 0.7279,
+      "ci95": [
+        -0.9958,
+        2.331
+      ],
+      "n_accounts": 7
+    },
+    "hashtag_wall": {
+      "mean": 0.3968,
+      "ci95": [
+        0.3205,
+        0.4709
+      ],
+      "n_accounts": 627
+    },
+    "thread_opener": {
+      "mean": 0.3278,
+      "ci95": [
+        -0.0999,
+        0.76
+      ],
+      "n_accounts": 19
+    },
+    "question": {
+      "mean": 0.0126,
+      "ci95": [
+        -0.0395,
+        0.0636
+      ],
+      "n_accounts": 887
+    },
+    "number_first": {
+      "mean": 0.1629,
+      "ci95": [
+        0.1277,
+        0.1986
+      ],
+      "n_accounts": 1493
+    }
+  },
+  "rule_effect_note": "mean over accounts of mean log2(multiple) with rule minus without; negative = rule goes with fewer likes than that account's norm",
+  "spearman_with_followers": {
+    "raw_likes": 0.566,
+    "outlier_multiple": 0.025
+  },
+  "baseline_from_k_random_posts": {
+    "3": {
+      "median_abs_log2_error": 0.589,
+      "p90_abs_log2_error": 1.807
+    },
+    "5": {
+      "median_abs_log2_error": 0.485,
+      "p90_abs_log2_error": 1.384
+    },
+    "10": {
+      "median_abs_log2_error": 0.322,
+      "p90_abs_log2_error": 0.973
+    },
+    "20": {
+      "median_abs_log2_error": 0.234,
+      "p90_abs_log2_error": 0.678
+    }
+  },
+  "privacy": "aggregates only; no tweet text, IDs or handles are written"
+}

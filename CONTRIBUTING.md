@@ -11,7 +11,10 @@ that.
 
 ## Other rules
 
-- Python 3.9+, standard library only, no network calls.
+- Python 3.9+, standard library only, no network calls. The one exception is
+  `measurement/validate.py`, a research script that needs pyarrow and numpy and
+  is not part of the plugin. It prints aggregates only; never add code that
+  writes tweet text, IDs or handles to disk.
 - Every tool has `--help`, `--json`, reads a file or `-` for stdin, handles UTF-8
   and CRLF, exits non-zero on bad input, and has tests with fixtures.
 - Copyright header on every source file:

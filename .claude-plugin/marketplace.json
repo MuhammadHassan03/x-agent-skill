@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "x-agent-skill",
+  "description": "The X agent skill pack for Claude: compliant, measured, offline",
+  "owner": {
+    "name": "Muhammad Hassan",
+    "url": "https://github.com/MuhammadHassan03"
+  },
+  "plugins": [
+    {
+      "name": "x-agent",
+      "description": "Twelve Claude skills that run an X account without touching X. The skills write, you post. No API, no browser automation, no scraping.",
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/MuhammadHassan03/x-agent-skill"
+    }
+  ]
+}

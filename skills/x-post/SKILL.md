@@ -86,7 +86,9 @@ BLOCKING: engagement bait; hashtag wall (more than 2)
 ## Fine print
 
 `postscore.py` is five local heuristics. It does not know how a post will do.
-Its measured accuracy is in the README. It never says a post is "undetectable"
+Measured on a public tweet corpus, its score did not predict which tweets beat
+their account's median likes (AUC about 0.50). Treat the number as a lint
+result, never as a forecast, and say so if the user reads it as one. It never says a post is "undetectable"
 or "will go viral".
 
 ## Approval gate

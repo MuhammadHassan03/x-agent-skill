@@ -22,8 +22,10 @@ Five checks, each 0-100, combined into one score:
                ineligibility problem, so it is flagged twice.
 
 This is a set of local heuristics. It does not know how a post will perform.
-Against a public tweet corpus the hook score separates weak hooks from strong
-ones modestly; see the README measurement section for the numbers.
+Measured on a public 2019-2022 tweet corpus it did NOT predict which tweets beat
+their own account's median likes (within-account AUC about 0.50). Use it as a
+lint for the problems it names (placeholders, bait, thread openers, links in
+the body, over-length), not as a forecast. See the README measurement section.
 
 Usage
   python postscore.py draft.txt
@@ -37,6 +39,7 @@ Exit codes: 0 scored (no hard flag), 1 hard flag raised, 2 bad input.
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import os
 import re
@@ -85,6 +88,7 @@ INVITE_RE = re.compile(r"\b(what'?s your|how do you|do you|did you|have you|whic
 GENERIC_Q_RE = re.compile(r"^\s*(thoughts|agree|right|ideas|anyone|who else)\s*\?*\s*$", re.I)
 
 
+@functools.lru_cache(maxsize=1)
 def load_formulas() -> List[Tuple[int, str, "re.Pattern[str]"]]:
     try:
         with open(HOOKS_JSON, encoding="utf-8") as fh:
