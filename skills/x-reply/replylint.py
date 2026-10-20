@@ -2,9 +2,12 @@
 # Copyright (c) 2026 Muhammad Hassan. MIT License.
 """replylint.py - lint a draft reply against an approximation of X's 0-3 rubric.
 
-X reportedly scores reply quality 0-3 (see references/x-algorithm.md; the
-rubric itself is not published, so this is an approximation, not a copy). The
-bands used here:
+What the open-sourced code shows (xai-org/x-algorithm, grox/flows/reply_spam,
+commit pinned in references/x-algorithm.md): replies under a post whose parent or
+root account has more than 250,000 followers get a 0-3 score plus a short reason
+from a Grok model. The prompt that defines the rubric is deliberately NOT
+published ("to reduce gameability"). So the bands below are this repo's
+approximation of an unpublished rubric, not a copy of it:
 
   0  spam-like or empty: generic praise only, emoji only, a link drop, pure
      self-promotion, or a repeat of the parent
@@ -12,6 +15,9 @@ bands used here:
   2  decent: on topic and either specific or informative
   3  strong: on topic, specific, and adds information, experience or a real
      counter-point
+
+Under smaller accounts the reply goes through a different, spam-oriented
+classifier instead of the 0-3 ranker. Writing for the rubric helps both.
 
 Checks (each pass/fail, with a reason):
   generic praise    "Great point", "This!", "So true", "100%", "Well said"
@@ -21,10 +27,14 @@ Checks (each pass/fail, with a reason):
   length sane       about 40 to 280 weighted characters
   promo / links     a link or "check out my" in a reply
   hashtags / emoji  hashtags in a reply, emoji-only replies
-  self-reply chain  --prior-replies-in-thread N: a second reply stacked in a
-                    thread you already replied in. A multi-step reply-spam
-                    filter reportedly zeroes self-reply chains under big
-                    accounts.
+  self-reply chain  --prior-replies-in-thread N: you are about to reply to your
+                    own reply in a thread under someone else's post. In the
+                    open-sourced code a multi-step reply-spam filter looks at
+                    threads where the replier is replying to themselves, under
+                    a root account with 1,000+ followers; when 2 or more of
+                    the replier's posts are flagged, their reply ranking score
+                    is set to 0. A single reply is never flagged. Edit your
+                    first reply instead of stacking a second.
 
 It never decides for you. It tells you which band the draft is likely in and
 what to fix. It does not and cannot know what X will score.
@@ -139,7 +149,7 @@ def lint(reply: str, parent: Optional[str] = None, prior_in_thread: int = 0) -> 
 
     chain = prior_in_thread >= 1
     add("no self-reply chain", not chain,
-        f"you already replied {prior_in_thread}x in this thread; a second stacked reply risks the reply-spam filter. Edit one reply instead"
+        f"you already replied {prior_in_thread}x in this thread; stacking a second reply is the shape the multi-step reply-spam filter looks for. Edit your first reply instead"
         if chain else "ok", fatal=True)
 
     fatal = any(c["fatal"] for c in checks)
