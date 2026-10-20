@@ -1,0 +1,184 @@
+{
+  "version": "1.0",
+  "note": "19 hook formulas for X. The first line is most of the post: write it so it works alone. Templates and examples are illustrative and invented. Replace every {slot} with something true and specific, or output {{your number}} and ask. 'match' is a regex swipe.py uses to name the formula a captured post used.",
+  "rules": [
+    "One idea per hook.",
+    "Numbers beat adjectives, but only numbers you can stand behind.",
+    "If it works with any other account's name on it, it is not your hook.",
+    "No hashtags, no emoji strings, no engagement bait in line 1.",
+    "Never ask for likes or reposts. It is bait, and bait is also an Original Content Rewards ineligibility problem."
+  ],
+  "hooks": [
+    {
+      "id": 1,
+      "name": "Contrarian Take",
+      "template": "Everyone says {common advice}. {specific experience} says otherwise.",
+      "example": "Everyone says post daily. I posted 4 times a week for a year and my replies went up.",
+      "best_for": "A real point of view. Draws replies, which carry the heaviest engagement weight.",
+      "trap": "Disagreeing with something nobody believes.",
+      "match": "^(everyone|most people|people) (says?|think|believe)|\\bis (a )?(myth|wrong|overrated)\\b|\\bnobody (tells|talks)"
+    },
+    {
+      "id": 2,
+      "name": "Number Reveal",
+      "template": "{N} {things} in {time}. {result}.",
+      "example": "400 cold DMs in 30 days. 11 replies. 2 clients.",
+      "best_for": "Experiments with a countable result.",
+      "trap": "A number that is rounded, invented or not yours.",
+      "match": "^\\d[\\d,.]*\\s+\\w+.{0,40}\\b(in|over|after)\\s+\\d"
+    },
+    {
+      "id": 3,
+      "name": "Mistake Confession",
+      "template": "I {did the wrong thing} for {time}. It cost me {cost}.",
+      "example": "I underpriced for 8 months. It cost me about $12,000.",
+      "best_for": "Trust. Specific cost makes it believable.",
+      "trap": "A humble-brag where the mistake was secretly a win.",
+      "match": "\\b(i (was wrong|lost|wasted|got it wrong)|my (biggest )?mistake|it cost me)\\b"
+    },
+    {
+      "id": 4,
+      "name": "Before After",
+      "template": "{Before state}. Then I changed {one thing}. {After state}.",
+      "example": "3 clients in a year. Then I changed my bio. 3 in a month.",
+      "best_for": "One clear change with a visible delta.",
+      "trap": "Changing five things and crediting one.",
+      "match": "\\bthen i (changed|stopped|started|switched)\\b"
+    },
+    {
+      "id": 5,
+      "name": "Myth Kill",
+      "template": "\"{Belief}\" is wrong. Here is what the data shows.",
+      "example": "\"Links kill reach\" is half true. Here is what I see.",
+      "best_for": "Correcting a belief your audience holds.",
+      "trap": "Killing a strawman.",
+      "match": "^[\\\"'“].{3,80}[\\\"'”] (is|are) (wrong|false|a myth|not true)"
+    },
+    {
+      "id": 6,
+      "name": "Specific List",
+      "template": "{N} {things} I {verb} that {result}:",
+      "example": "5 questions I ask before taking any freelance call:",
+      "best_for": "Saveable lists with a promised payoff.",
+      "trap": "Generic items anyone could write.",
+      "match": "^\\d+\\s+(things|ways|rules|questions|tools|mistakes|lessons)\\b"
+    },
+    {
+      "id": 7,
+      "name": "Plain Observation",
+      "template": "{Concrete thing I noticed} {where}.",
+      "example": "Every client who ghosted me skipped the same question.",
+      "best_for": "Low-ego posts that invite a reply with the reader's own example.",
+      "trap": "Vague noticing with no object.",
+      "match": "^(every|none of|nobody|the only)\\b.{5,}"
+    },
+    {
+      "id": 8,
+      "name": "Question From Experience",
+      "template": "{Specific question only someone in this spot would ask}?",
+      "example": "Freelancers: do you quote before or after the discovery call?",
+      "best_for": "Replies. The question must be answerable in one line.",
+      "trap": "A question with no stake, such as \"thoughts?\".",
+      "match": "\\?\\s*$"
+    },
+    {
+      "id": 9,
+      "name": "Price Reveal",
+      "template": "I charge {price} for {deliverable}. Here is how I got there.",
+      "example": "I charge $1,500 for a landing page. Here is how I got there.",
+      "best_for": "Money posts get read. Only use a price you charge.",
+      "trap": "Posting a price you do not actually charge.",
+      "match": "\\bi (charge|charged|pay|paid|earn|earned|make|made)\\b.{0,30}[$£€]\\s?\\d"
+    },
+    {
+      "id": 10,
+      "name": "Quiet Rule",
+      "template": "The rule I follow: {rule}.",
+      "example": "The rule I follow: no call without a written brief first.",
+      "best_for": "Memorable, repeatable stance.",
+      "trap": "A rule you do not follow.",
+      "match": "^(the|my) (one )?rule\\b"
+    },
+    {
+      "id": 11,
+      "name": "Before You",
+      "template": "Before you {action}, {check}.",
+      "example": "Before you send that proposal, read it as the client.",
+      "best_for": "Practical, saveable, second person.",
+      "trap": "Telling people what to do with no credentials.",
+      "match": "^before you\\b"
+    },
+    {
+      "id": 12,
+      "name": "Small Win",
+      "template": "{Small specific win} today. {What caused it}.",
+      "example": "First reply from a founder today. I referenced his pricing page.",
+      "best_for": "A small account's best format: honest and specific.",
+      "trap": "Inflating a small win.",
+      "match": "\\b(today|this week)\\b.{0,60}\\b(first|finally|got|landed|replied)\\b"
+    },
+    {
+      "id": 13,
+      "name": "Teardown",
+      "template": "I looked at {N} {things}. {Finding}.",
+      "example": "I read 20 freelance proposals. 17 opened with the writer's bio.",
+      "best_for": "Original analysis. Counts as original content.",
+      "trap": "Not doing the work and implying you did.",
+      "match": "^i (read|looked at|reviewed|audited|checked) \\d+"
+    },
+    {
+      "id": 14,
+      "name": "Unpopular Fact",
+      "template": "{Counter-intuitive fact}. {Why}.",
+      "example": "Most of my leads came from replies, not posts. People saw me before they saw my profile.",
+      "best_for": "Surprising, sourced from your own account.",
+      "trap": "A fact you cannot back with your own numbers.",
+      "match": "\\b(most of my|the majority of my)\\b"
+    },
+    {
+      "id": 15,
+      "name": "Hot Take Pair",
+      "template": "{Option A} is {adjective}. {Option B} is {adjective}.",
+      "example": "Posting is easy. Replying well is hard.",
+      "best_for": "Short, quotable, invites a quote post.",
+      "trap": "Two statements with no tension.",
+      "match": "^\\w+(\\s\\w+){0,3} is (easy|hard|cheap|expensive|free|overrated|underrated)\\b"
+    },
+    {
+      "id": 16,
+      "name": "Build Log",
+      "template": "Day {N} of {project}: {one concrete update}.",
+      "example": "Day 12 of the newsletter: 41 subscribers, 9 from replies.",
+      "best_for": "Serial proof of work.",
+      "trap": "Updates with no number.",
+      "match": "^(day|week|month)\\s+\\d+"
+    },
+    {
+      "id": 17,
+      "name": "Reader Callout",
+      "template": "If you {specific situation}, {do this}.",
+      "example": "If you freelance and hate invoicing, send them before the final file.",
+      "best_for": "Self-selecting: the right reader stops.",
+      "trap": "A situation so broad it fits everyone.",
+      "match": "^if you\\b"
+    },
+    {
+      "id": 18,
+      "name": "Quote Frame",
+      "template": "\"{Short line}\" - {who said it}. {Why it matters now}.",
+      "example": "\"Do not ask for feedback, ask for a decision.\" My best client said that. It changed my calls.",
+      "best_for": "Borrowed authority with your own application.",
+      "trap": "A famous quote with no application.",
+      "match": "^[\\\"“].{5,120}[\\\"”]\\s*[-–]"
+    },
+    {
+      "id": 19,
+      "name": "Reversal",
+      "template": "I used to {old belief}. Now I {new behaviour}.",
+      "example": "I used to reply with advice. Now I reply with a question.",
+      "best_for": "Shows a changed mind, which reads as honest.",
+      "trap": "No clear reason for the change.",
+      "match": "^i used to\\b"
+    }
+  ]
+}

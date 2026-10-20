@@ -1,0 +1,13 @@
+{
+  "name": "x-agent",
+  "description": "Twelve Claude skills that run an X account without touching X: posts, threads and replies scored offline, a humanizer, a profile rubric, a weekly plan, DM outreach, a Creator Studio CSV auditor and an Original Content Rewards tracker. The skills write, you post. No API, no browser automation, no scraping.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Muhammad Hassan",
+    "url": "https://github.com/MuhammadHassan03"
+  },
+  "homepage": "https://github.com/MuhammadHassan03/x-agent-skill",
+  "repository": "https://github.com/MuhammadHassan03/x-agent-skill",
+  "license": "MIT",
+  "keywords": ["x", "twitter", "writing", "humanizer", "social", "compliant"]
+}
