@@ -9,7 +9,7 @@ import pytest
 
 from conftest import ROOT, SKILLS
 
-TEXT_EXT = {".md", ".py", ".json", ".yml", ".txt", ".ini", ".rs"}
+TEXT_EXT = {".md", ".py", ".json", ".yml", ".txt", ".ini", ".rs", ".html", ".css", ".js"}
 SKIP_DIRS = {".git", "__pycache__", ".pytest_cache"}
 GATE_START = "## Approval gate"
 FORBIDDEN_IMPORTS = {"socket", "urllib", "http", "requests", "httpx", "selenium", "playwright", "webbrowser",
@@ -129,3 +129,20 @@ def test_every_reference_has_a_last_checked_line():
     for f in ("x-algorithm.md", "x-rules.md", "stale.md"):
         t = read(os.path.join(ROOT, "references", f))
         assert re.search(r"(?i)last checked: 2026-\d\d-\d\d|\| 2026-\d\d-\d\d \|", t), f
+
+
+def test_site_is_static_small_and_self_contained():
+    site = os.path.join(ROOT, "site")
+    assert sorted(os.listdir(site)) == ["app.js", "index.html", "style.css"]
+    assert sum(os.path.getsize(os.path.join(site, f)) for f in os.listdir(site)) < 200 * 1024
+    html = read(os.path.join(site, "index.html"))
+    for url in re.findall(r'<(?:script|link)[^>]+(?:src|href)="([^"]+)"', html):
+        assert not url.startswith(("http:", "https:", "//")), url
+    assert "@import" not in read(os.path.join(site, "style.css"))
+    assert not re.search(r"fetch\(|XMLHttpRequest|sendBeacon|WebSocket", read(os.path.join(site, "app.js")))
+
+
+def test_site_has_no_invented_proof():
+    html = read(os.path.join(ROOT, "site", "index.html")).lower()
+    for word in ("testimonial", "stars", "customers", "trusted by", "users love"):
+        assert word not in html, word

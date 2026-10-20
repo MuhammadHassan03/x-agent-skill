@@ -1,5 +1,7 @@
 # The X agent skill
 
+Site: https://muhammadhassan03.github.io/x-agent-skill/
+
 Twelve Claude Code skills that run an X (Twitter) account without ever touching X.
 Free, MIT, no signup, no API key, nothing to connect.
 
@@ -22,7 +24,7 @@ or are a prompt file with no measurement. This one is built around three things:
    hand. `/x-dm` drafts one message at a time for you to send.
 2. **Measured.** The scorer and the outlier ranker were tested on a public corpus,
    and the result for the scorer is not flattering. It is below, in full.
-3. **Tools that run.** Ten dependency-free tools, 136 tests, CI on Python 3.9, 3.11
+3. **Tools that run.** Ten dependency-free tools, 142 tests, CI on Python 3.9, 3.11
    and 3.13 on Linux and Windows. A repo test fails the build on any em dash, any
    network or browser import in a tool, and any skill that lacks the approval gate.
 
@@ -37,7 +39,7 @@ As a plugin:
 
 ```
 /plugin marketplace add MuhammadHassan03/x-agent-skill
-/plugin install x-agent
+/plugin install x-agent@x-agent-skill
 ```
 
 Or by hand:
@@ -50,6 +52,9 @@ cp -r x-agent-skill/skills/x-* ~/.claude/skills/
 Or with no Claude Code at all: paste one `SKILL.md` at the top of a chat and it runs as a
 mode. You lose the Python tools, which is most of the point of `/x-post`, `/x-reply` and
 `/x-human`, but the writing rules still apply.
+
+On Windows, where a skill says `python3`, use `python`. The `references/` and `templates/` folders stay
+in the clone; open them there.
 
 Keep the `skills/` folders side by side: `x-thread`, `x-reply`, `x-viral` and
 `x-article` import or read files from `x-post`.
@@ -252,6 +257,7 @@ references/            x-algorithm.md (pinned), x-rules.md, stale.md
 measurement/           validate.py (needs pyarrow, numpy), results.json (aggregates)
 measurement/dogfood/   report.py: day-30 numbers from your own analytics CSV
 DOGFOOD.md             the 30-day routine
+site/                  the landing page (static, no build step)
 tests/                 one test file per tool, invented fixtures
 ```
 

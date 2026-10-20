@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>x-agent-skill: twelve skills that write for X, offline and measured</title>
+<meta name="description" content="Twelve Claude Code skills and ten offline tools for running an X account. The skills write, you post. No API, no browser automation, no scraping. MIT.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0c0e12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c0e12'/%3E%3Cpath d='M9 9l14 14M23 9L9 23' stroke='%236ee7b7' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script>
+/* Set the theme before first paint: saved choice, else the OS preference, else dark. */
+(function () {
+  var t = "dark";
+  try {
+    var s = localStorage.getItem("theme");
+    if (s === "light" || s === "dark") { t = s; }
+    else if (window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches) { t = "light"; }
+  } catch (e) {}
+  document.documentElement.setAttribute("data-theme", t);
+  document.documentElement.classList.add("js");
+})();
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header" id="top-bar">
+  <nav class="nav" aria-label="Primary">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">x</span><span>x-agent-skill</span></a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#measured">Measured</a></li>
+      <li><a href="#fine-print">Fine print</a></li>
+      <li><a href="#install">Install</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="https://github.com/MuhammadHassan03/x-agent-skill">GitHub</a>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-pressed="false" aria-label="Light theme">
+        <svg class="i-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="i-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+<!-- 1. HERO -->
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-copy reveal">
+      <p class="eyebrow">Claude Code skills for X</p>
+      <h1 id="hero-title">The skills write.<br>You post.</h1>
+      <p class="lede">Twelve skills and ten offline tools that draft, score and check what you put on X. Nothing here posts, likes, follows, DMs or scrapes. Standard library Python, no network, nothing uploaded.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#install">Install it</a>
+        <a class="btn btn-ghost" href="https://github.com/MuhammadHassan03/x-agent-skill">Read the source</a>
+      </div>
+      <p class="micro">Free, MIT. Free-account default: 280 weighted characters, link in the first reply.</p>
+    </div>
+
+    <div class="term-card reveal" data-delay="1">
+      <div class="term-bar">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <div class="seg" role="tablist" aria-label="Sample tool output" id="hero-tabs">
+          <button role="tab" id="ht-1" aria-controls="hp-1" aria-selected="true" tabindex="0"><kbd aria-hidden="true">1</kbd>count</button>
+          <button role="tab" id="ht-2" aria-controls="hp-2" aria-selected="false" tabindex="-1"><kbd aria-hidden="true">2</kbd>score</button>
+          <button role="tab" id="ht-3" aria-controls="hp-3" aria-selected="false" tabindex="-1"><kbd aria-hidden="true">3</kbd>reply</button>
+          <button role="tab" id="ht-4" aria-controls="hp-4" aria-selected="false" tabindex="-1"><kbd aria-hidden="true">4</kbd>humanize</button>
+        </div>
+      </div>
+      <div class="term-body">
+        <div role="tabpanel" id="hp-1" aria-labelledby="ht-1"><pre tabindex="0"><code><span class="p">$ python xcount.py post.txt</span>
+76 / 280 weighted (free)  FITS
+  remaining 204, urls 1 (each 23), weight-2 characters 0</code></pre></div>
+        <div role="tabpanel" id="hp-2" aria-labelledby="ht-2" hidden><pre tabindex="0"><code><span class="p">$ python postscore.py draft.txt</span>
+POST SCORE  37.1  WEAK   (161/280 weighted)
+  LINK         #######.............  35.0  1 link(s) in body
+  BAIT         ....................   0.0  like/repost solicitation,
+               "RT/like if" bait, "follow for more"
+BLOCKING: engagement bait; hashtag wall (more than 2)</code></pre></div>
+        <div role="tabpanel" id="hp-3" aria-labelledby="ht-3" hidden><pre tabindex="0"><code><span class="p">$ python replylint.py reply.txt --parent parent.txt</span>
+REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
+  FAIL  no generic praise    reads as generic praise or
+                             agreement with nothing added
+  FAIL  on topic             shares no content words with
+                             the parent post</code></pre></div>
+        <div role="tabpanel" id="hp-4" aria-labelledby="ht-4" hidden><pre tabindex="0"><code><span class="p">$ python humanize.py draft.txt --report</span>
+19 machine artefacts removed, 3 structural tells flagged
+  1x  let that sink in  -&gt; (deleted)   [x]
+  1x  leverage          -&gt; use         [verbs]
+<span class="p">$ python detect.py draft.txt clean.txt</span>
+  17.8 FLAGGED  -&gt;  78.9 PASS   (+61.0)</code></pre></div>
+      </div>
+      <p class="term-note">Excerpts of real output from the repo's tools, run on sample text. The drafts are samples, not claims.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. SKILLS -->
+<section class="section" id="skills" aria-labelledby="skills-title">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="num">01</span> The twelve</p>
+      <h2 id="skills-title">One command each.</h2>
+      <p class="sec-sub">Every skill ends the same way: your text in one copy-ready block, then "Reply yes to log it". A yes appends one line to a file on your disk. It never posts.</p>
+    </header>
+
+    <div class="chips reveal" role="group" aria-label="Filter skills">
+      <button class="chip" type="button" data-filter="all" aria-pressed="true">All 12</button>
+      <button class="chip" type="button" data-filter="write" aria-pressed="false">Write</button>
+      <button class="chip" type="button" data-filter="improve" aria-pressed="false">Improve</button>
+      <button class="chip" type="button" data-filter="research" aria-pressed="false">Research</button>
+      <button class="chip" type="button" data-filter="plan" aria-pressed="false">Plan and money</button>
+    </div>
+    <p class="sr-only" id="filter-status" role="status" aria-live="polite"></p>
+
+    <ul class="skill-grid" id="skill-grid">
+      <li data-cat="write" class="reveal"><details><summary><code>/x-post</code><span>One idea into a post: three hooks from 19 formulas, scored, one humanized draft.</span></summary><p>Tools: <code>postscore.py</code>, <code>xcount.py</code>. Link goes in the first reply, labelled observed, not coded. Anything missing a number becomes <code>{{your number}}</code> and the scorer blocks it.</p></details></li>
+      <li data-cat="write" class="reveal"><details><summary><code>/x-thread</code><span>A long draft into a thread of 280-weighted-character posts, links gathered in the last post.</span></summary><p>Tool: <code>thread.py</code>. Splits at paragraph, then sentence, then word. Warns when a removed link leaves a dangling sentence.</p></details></li>
+      <li data-cat="write" class="reveal"><details><summary><code>/x-reply</code><span>Replies under bigger accounts, checked against an approximation of the 0 to 3 reply rubric.</span></summary><p>Tool: <code>replylint.py</code>. Refuses compliment-only openers and stacked self-replies. The real rubric prompt is not published; the bands are an approximation.</p></details></li>
+      <li data-cat="write" class="reveal"><details><summary><code>/x-article</code><span>Long-form outline, draft, first-screen hook and an originality checklist.</span></summary><p>Premium feature, documented but not tested by the author. Free accounts get pointed to <code>/x-thread</code>.</p></details></li>
+      <li data-cat="write" class="reveal"><details><summary><code>/x-dm</code><span>One first message and two follow-ups for one specific person. Then stop.</span></summary><p>One at a time, written for that person, sent by hand. No batches, no merge fields. Drafting only.</p></details></li>
+      <li data-cat="improve" class="reveal"><details><summary><code>/x-human</code><span>Strips invisible Unicode, dashes and stock phrases, then scores five checks.</span></summary><p>Tools: <code>humanize.py</code>, <code>detect.py</code>. Local heuristics, not a third-party detector. It never says a text is undetectable.</p></details></li>
+      <li data-cat="improve" class="reveal"><details><summary><code>/x-profile</code><span>Bio, pinned post, banner and link, scored on a 100-point rubric.</span></summary><p>Data: <code>rubric.json</code>, eleven items. The skill never opens or edits your profile.</p></details></li>
+      <li data-cat="research" class="reveal"><details><summary><code>/x-viral</code><span>Ranks posts you noted down by hand by multiple over each account's own median.</span></summary><p>Tool: <code>swipe.py</code>. Never opens X, never drives a browser. You paste, it ranks.</p></details></li>
+      <li data-cat="research" class="reveal"><details><summary><code>/x-audit</code><span>Reads your own analytics CSV and ranks your posts by outlier multiple.</span></summary><p>Tool: <code>xanalytics.py</code>. Headers matched flexibly because X does not document the export. Needs 3 or more posts.</p></details></li>
+      <li data-cat="research" class="reveal"><details><summary><code>/x-algo</code><span>Regenerates the pinned ranking-weights reference from a <code>param.rs</code> you paste.</span></summary><p>Tool: <code>weights.py</code>. Refuses to run without a commit hash. It never fetches anything.</p></details></li>
+      <li data-cat="plan" class="reveal"><details><summary><code>/x-plan</code><span>Your week: what to post, which format, when, and which accounts to reply to.</span></summary><p>Reply-first plan for a small free account. Times are marked as guesses until your own data says otherwise.</p></details></li>
+      <li data-cat="plan" class="reveal"><details><summary><code>/x-money</code><span>Original Content Rewards eligibility tracker and ineligible-content linter.</span></summary><p>Tool: <code>ocr.py</code>. X publishes no per-impression rate, so it refuses to estimate earnings unless you supply your own. Premium program, not tested by the author.</p></details></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3. WHAT IT WILL NOT DO -->
+<section class="strip" aria-labelledby="never-title">
+  <div class="wrap">
+    <h2 id="never-title" class="strip-title reveal">What it will not do</h2>
+    <ul class="never reveal">
+      <li><span aria-hidden="true">&times;</span> Post, like, follow, reply or DM</li>
+      <li><span aria-hidden="true">&times;</span> Drive a browser or run in the page</li>
+      <li><span aria-hidden="true">&times;</span> Scrape X or call its API</li>
+      <li><span aria-hidden="true">&times;</span> Upload your text anywhere</li>
+      <li><span aria-hidden="true">&times;</span> Invent a number you did not give</li>
+      <li><span aria-hidden="true">&times;</span> Call anything undetectable</li>
+    </ul>
+    <p class="strip-note reveal">X's Automation Rules list scripting the website under "Don't" and say it may lead to permanent suspension. So nothing here acts on X. <a href="https://help.x.com/en/rules-and-policies/x-automation">Read the page</a>.</p>
+  </div>
+</section>
+
+<!-- 4. HOW IT WORKS -->
+<section class="section" id="how" aria-labelledby="how-title">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="num">02</span> How it works</p>
+      <h2 id="how-title">Idea in, your own edit out.</h2>
+      <p class="sec-sub">The human stays in the loop for every step that touches X.</p>
+    </header>
+    <ol class="steps">
+      <li class="reveal"><span class="step-n">01</span><h3>Bring one real thing</h3><p>Something that happened, with a number you actually have. No number, no line: it becomes a placeholder.</p></li>
+      <li class="reveal" data-delay="1"><span class="step-n">02</span><h3>Draft and check</h3><p>Three hooks, one draft, counted the way X counts, then run through the checks that fit.</p></li>
+      <li class="reveal" data-delay="2"><span class="step-n">03</span><h3>Edit it by hand</h3><p>Change a word, cut a line, add a detail only you know. The skill shows the final block.</p></li>
+      <li class="reveal" data-delay="3"><span class="step-n">04</span><h3>You post it</h3><p>On x.com, yourself. Reply "yes" and one line is appended to a log on your disk. That is all "yes" does.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 5. TOOLS -->
+<section class="section alt" id="tools" aria-labelledby="tools-title">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="num">03</span> The tools</p>
+      <h2 id="tools-title">Ten tools that actually run.</h2>
+      <p class="sec-sub">Python 3.9+, standard library only, no network, UTF-8, CRLF tolerant, exit non-zero on bad input. Pick one to see its real output.</p>
+    </header>
+    <div class="tools reveal">
+      <div class="tool-list" role="tablist" aria-label="Tools" aria-orientation="vertical" id="tool-tabs">
+        <button role="tab" id="tt-1" aria-controls="tp-1" aria-selected="true" tabindex="0">xcount.py</button>
+        <button role="tab" id="tt-2" aria-controls="tp-2" aria-selected="false" tabindex="-1">postscore.py</button>
+        <button role="tab" id="tt-3" aria-controls="tp-3" aria-selected="false" tabindex="-1">thread.py</button>
+        <button role="tab" id="tt-4" aria-controls="tp-4" aria-selected="false" tabindex="-1">replylint.py</button>
+        <button role="tab" id="tt-5" aria-controls="tp-5" aria-selected="false" tabindex="-1">swipe.py</button>
+        <button role="tab" id="tt-6" aria-controls="tp-6" aria-selected="false" tabindex="-1">xanalytics.py</button>
+        <button role="tab" id="tt-7" aria-controls="tp-7" aria-selected="false" tabindex="-1">humanize.py</button>
+        <button role="tab" id="tt-8" aria-controls="tp-8" aria-selected="false" tabindex="-1">detect.py</button>
+        <button role="tab" id="tt-9" aria-controls="tp-9" aria-selected="false" tabindex="-1">ocr.py</button>
+        <button role="tab" id="tt-10" aria-controls="tp-10" aria-selected="false" tabindex="-1">weights.py</button>
+      </div>
+      <div class="tool-panels">
+        <div role="tabpanel" id="tp-1" aria-labelledby="tt-1"><p class="tool-desc">Counts a post the way X does: weighted characters, CJK and most emoji weigh 2, every URL weighs 23. Vendored from the public twitter-text config.</p><pre tabindex="0"><code><span class="p">$ python xcount.py post.txt</span>
+76 / 280 weighted (free)  FITS
+  remaining 204, urls 1 (each 23), weight-2 characters 0</code></pre></div>
+        <div role="tabpanel" id="tp-2" aria-labelledby="tt-2" hidden><p class="tool-desc">Five checks: hook, specificity, reply pull, link, bait. A lint for named problems, not a forecast (see the measurement).</p><pre tabindex="0"><code><span class="p">$ python postscore.py draft.txt</span>
+POST SCORE  93.8  STRONG   (203/280 weighted)
+  HOOK         ###################.  95.0  61 weighted characters
+  SPECIFICITY  #################### 100.0  9 concrete markers in 42 words
+  REPLY PULL   ###############.....  75.0  question present
+  LINK         #################### 100.0  no link in body
+  BAIT         #################### 100.0  none</code></pre></div>
+        <div role="tabpanel" id="tp-3" aria-labelledby="tt-3" hidden><p class="tool-desc">Splits a long draft into posts of 280 weighted characters or fewer and moves links to the last post.</p><pre tabindex="0"><code><span class="p">$ python thread.py draft.txt</span>
+--- post 1/4  (52/280)
+I sent 400 cold DMs in 30 days and 2 became clients.
+--- post 4/4  (103/280)
+What is the first line you send to a stranger?
+
+Full breakdown of the messages:
+https://example.com/dm-breakdown
+---
+1 link(s) moved to the last post.</code></pre></div>
+        <div role="tabpanel" id="tp-4" aria-labelledby="tt-4" hidden><p class="tool-desc">An approximation of the 0 to 3 reply rubric. The real prompt is not published.</p><pre tabindex="0"><code><span class="p">$ python replylint.py reply.txt --parent parent.txt</span>
+REPLY BAND 3/3  STRONG   (125 weighted)
+  pass  no generic praise    ok
+  pass  on topic             shares ['cold', 'dms', 'page'] ...
+  pass  specific             has a number, a name or a first-person event
+  pass  adds information     gives a reason, an example, a number ...</code></pre></div>
+        <div role="tabpanel" id="tp-5" aria-labelledby="tt-5" hidden><p class="tool-desc">Ranks posts you collected by hand by outlier multiple over each account's own median. Accounts without a baseline are never ranked.</p><pre tabindex="0"><code><span class="p">$ python swipe.py captured.tsv</span>
+- **OUTLIER** 35.65x  @alpha_demo  (41,000 vs 1,150 computed)
+- **OUTLIER** 7.38x   @beta_demo   (2,400 vs 325 computed)
+- 1.04x  @alpha_demo  (1,200 vs 1,150 computed)
+
+## No baseline (not ranked)
+- @lonely_demo: needs a median column or 3+ captured posts</code></pre></div>
+        <div role="tabpanel" id="tp-6" aria-labelledby="tt-6" hidden><p class="tool-desc">Reads your own analytics export. Sample file of invented rows shown here.</p><pre tabindex="0"><code><span class="p">$ python xanalytics.py analytics.csv</span>
+X ANALYTICS  20 posts, baseline 996 median impressions
+TOP (outlier multiple)
+    5.49x      5,465  eng 2.7%  Everyone says post daily. I do not.
+FEATURES (median multiple, groups of 3+ only)
+  link in body       link: 0.33x (n=4)  |  no link: 1.64x (n=16)
+Note: fewer than 30 posts: treat comparisons as prompts to test,
+not findings.</code></pre></div>
+        <div role="tabpanel" id="tp-7" aria-labelledby="tt-7" hidden><p class="tool-desc">Four passes: invisible characters, typography, lexicon, then structural tells that are flagged, not rewritten.</p><pre tabindex="0"><code><span class="p">$ python humanize.py draft.txt --report</span>
+19 machine artefacts removed, 3 structural tells flagged for rewrite
+  1x  in today's fast-paced world  -&gt; (deleted)   [openers]
+  1x  let that sink in             -&gt; (deleted)   [x]
+  1x  leverage                     -&gt; use         [verbs]
+4. STRUCTURAL TELLS  (not auto-fixed, rewrite these yourself)
+  2x  Numbered emoji bullets</code></pre></div>
+        <div role="tabpanel" id="tp-8" aria-labelledby="tt-8" hidden><p class="tool-desc">Five local heuristics, not GPTZero, Originality or any third-party detector. Checks that need more text than a short post has are left out, not faked.</p><pre tabindex="0"><code><span class="p">$ python detect.py draft.txt clean.txt</span>
+  FINGERPRINT   ........................   0.0
+                1 invisible, 2 em dash, 4 curly quote, 0 ellipsis
+  HUMAN SCORE   ####....................  17.8   FLAGGED
+  ...
+  HUMAN SCORE   ###################.....  78.9   PASS
+  17.8 FLAGGED  -&gt;  78.9 PASS   (+61.0)</code></pre></div>
+        <div role="tabpanel" id="tp-9" aria-labelledby="tt-9" hidden><p class="tool-desc">Original Content Rewards thresholds and an ineligible-content linter. Refuses to estimate earnings without your own rate.</p><pre tabindex="0"><code><span class="p">$ python ocr.py status --premium no --verified-followers 310 ...</span>
+NOT ELIGIBLE
+  MISS active Premium plan: no: enrollment needs an active Premium plan
+  MISS 500 verified followers: 310 / 500 (62%), 190 to go
+  ok   18 or older: yes
+<span class="p">$ python ocr.py status --estimate</span>
+ocr: refusing to estimate earnings: X publishes no per-impression rate.</code></pre></div>
+        <div role="tabpanel" id="tp-10" aria-labelledby="tt-10" hidden><p class="tool-desc">Parses a <code>param.rs</code> you paste and writes the pinned reference. A commit hash is mandatory.</p><pre tabindex="0"><code><span class="p">$ python weights.py param.rs --commit 74d49a4... --date 2026-10-20</span>
+| `ReportWeight` | -234 | viewer reports the post |
+| `ShareViaCopyLinkWeight` | 20 | someone copies the link |
+| `ReplyWeight` | 5 | reply |
+| `FavoriteWeight` | 0.66 | like |
+A reply from someone who follows the author and is followed
+back scales with 5 + 15 = 20.</code></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. MEASURED -->
+<section class="section" id="measured" aria-labelledby="measured-title">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="num">04</span> What I actually measured</p>
+      <h2 id="measured-title">The scorer does not predict likes.</h2>
+      <p class="sec-sub">Tested within each account on 3 of 41 shards of a public tweet corpus: 6.4M tweet rows from 2019-01-01 to 2022-12-31, 1,500 accounts, 270,880 tweets scored. A hit is 3x or more that account's median likes (37,861); a miss is under 1x (131,549). Aggregates only; no tweet text is in the repo.</p>
+    </header>
+
+    <div class="measure reveal">
+      <div class="seg seg-wide" role="tablist" aria-label="Measurement views" id="measure-tabs">
+        <button role="tab" id="mt-1" aria-controls="mp-1" aria-selected="true" tabindex="0">Does it predict hits?</button>
+        <button role="tab" id="mt-2" aria-controls="mp-2" aria-selected="false" tabindex="-1">Rule effects</button>
+        <button role="tab" id="mt-3" aria-controls="mp-3" aria-selected="false" tabindex="-1">The multiple</button>
+      </div>
+
+      <div role="tabpanel" id="mp-1" aria-labelledby="mt-1" tabindex="0">
+        <p class="m-lede">Within-account AUC, hits vs misses, over 1,402 accounts. 0.50 is a coin flip.</p>
+        <ul class="bars" aria-label="AUC by predictor">
+          <li><span class="b-label">Hook score</span><span class="b-track" aria-hidden="true"><i style="--v:50"></i><b style="--m:50"></b></span><span class="b-val">0.500 <small>(0.494 to 0.506)</small></span></li>
+          <li><span class="b-label">Full postscore total</span><span class="b-track" aria-hidden="true"><i style="--v:47.5"></i><b style="--m:50"></b></span><span class="b-val">0.475 <small>(0.469 to 0.482)</small></span></li>
+          <li><span class="b-label">Baseline: tweet length alone</span><span class="b-track" aria-hidden="true"><i style="--v:59.2"></i><b style="--m:50"></b></span><span class="b-val">0.592 <small>(0.584 to 0.600)</small></span></li>
+          <li><span class="b-label">Baseline: number in first line</span><span class="b-track" aria-hidden="true"><i style="--v:52.7"></i><b style="--m:50"></b></span><span class="b-val">0.527 <small>(0.521 to 0.532)</small></span></li>
+        </ul>
+        <p class="m-note">The tick marks 0.50. The score does not forecast likes, and a trivial length feature beats it. It was not tuned on this data afterwards. So <code>postscore.py</code> is a lint for the problems it names (placeholders, bait, thread openers, links in the body, over length), not a prediction.</p>
+      </div>
+
+      <div role="tabpanel" id="mp-2" aria-labelledby="mt-2" tabindex="0" hidden>
+        <p class="m-lede">Mean difference in log2 of the multiple, within account. Positive means more likes than that account's norm.</p>
+        <table class="tbl">
+          <caption class="sr-only">Rule effects within account</caption>
+          <thead><tr><th scope="col">Rule</th><th scope="col">Effect (95% interval)</th><th scope="col">Accounts</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Link in the post</th><td>+0.59 (+0.53 to +0.65)</td><td>1,398</td></tr>
+            <tr><th scope="row">Hashtag wall (3+)</th><td>+0.40 (+0.32 to +0.47)</td><td>627</td></tr>
+            <tr><th scope="row">Number in the first line</th><td>+0.16 (+0.13 to +0.20)</td><td>1,493</td></tr>
+            <tr><th scope="row">Question</th><td>+0.01 (-0.04 to +0.06)</td><td>887</td></tr>
+            <tr><th scope="row">Thread opener</th><td>+0.33 (-0.10 to +0.76)</td><td>19, too few</td></tr>
+            <tr><th scope="row">Engagement bait</th><td>+0.73 (-1.00 to +2.33)</td><td>7, too few</td></tr>
+          </tbody>
+        </table>
+        <p class="m-note">Read carefully: in 2019 to 2022 data, posts with links and hashtag walls got more likes than the same account's other posts, the opposite of what the scorer penalises. The corpus ends in April 2023, before Premium reach changes, the open-sourced ranking code and Original Content Rewards, and likes are not reach. So the link advice rests on a 2025 outside observation (Buffer, 18.8M posts), labelled "observed, not coded", not on anything measured here.</p>
+      </div>
+
+      <div role="tabpanel" id="mp-3" aria-labelledby="mt-3" tabindex="0" hidden>
+        <p class="m-lede">Spearman correlation with follower count: raw likes 0.566, outlier multiple 0.025. Raw likes mostly measure account size; the multiple removes it.</p>
+        <p class="m-lede">How good is a baseline built from k random posts? Median absolute error in log2 units (0.59 is off by about 1.5x):</p>
+        <table class="tbl">
+          <caption class="sr-only">Baseline error by number of posts</caption>
+          <thead><tr><th scope="col">k posts</th><th scope="col">Median error</th><th scope="col">90th percentile</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">3</th><td>0.59</td><td>1.81 (about 3.5x)</td></tr>
+            <tr><th scope="row">5</th><td>0.49</td><td>1.38</td></tr>
+            <tr><th scope="row">10</th><td>0.32</td><td>0.97</td></tr>
+            <tr><th scope="row">20</th><td>0.23</td><td>0.68</td></tr>
+          </tbody>
+        </table>
+        <p class="m-note">The tools require 3 posts. That is a floor, not accuracy: a 3-post multiple of 3x can be an ordinary post. Capture 10 per account if you can.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. FINE PRINT -->
+<section class="section alt" id="fine-print" aria-labelledby="fine-title">
+  <div class="wrap narrow">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="num">05</span> The fine print</p>
+      <h2 id="fine-title">What it will not claim.</h2>
+    </header>
+    <div class="acc reveal">
+      <details open><summary>It cannot know how a post will perform</summary><p>The measurement above says so. The score is a lint, not a forecast.</p></details>
+      <details><summary>Nothing is undetectable</summary><p><code>/x-human</code> runs five local heuristics. They are not GPTZero, Originality, Copyleaks, Winston or Turnitin, and call none of them. Posts "created or posted using automated means" are ineligible for Original Content Rewards. Read and edit every post.</p></details>
+      <details><summary>The reply rubric is not published</summary><p>The open-sourced code scores replies 0 to 3 with a Grok model when the parent or root has over 250,000 followers, but the prompt is excluded "to reduce gameability". <code>replylint.py</code> is an approximation. Smaller accounts go through a different spam classifier.</p></details>
+      <details><summary>No coded link penalty was found</summary><p>Link advice is "observed, not coded": a measurement from outside, not a rule in the ranking parameters.</p></details>
+      <details><summary>Weights scale predicted probabilities, not counts</summary><p>The file's own comments call "one report cancels 468 likes" wrong. The weights here are the ones in the file at the pinned commit (like 0.66, click 0.3, dwell 0.05, not-interested -52.272), not the older figures many guides quote.</p></details>
+      <details><summary>No earnings estimates</summary><p>X publishes no per-impression rate. <code>/x-money</code> refuses to estimate unless you supply your own rate, and labels the result as your assumption.</p></details>
+      <details><summary>Premium features are untested</summary><p>Articles, 25,000-character posts, Original Content Rewards and Subscriptions are documented from X's pages, last checked 2026-10-21. The Subscriptions gate is unverified; check the app.</p></details>
+      <details><summary>Numbers go stale</summary><p>Every one is listed in <a href="https://github.com/MuhammadHassan03/x-agent-skill/blob/master/references/stale.md">references/stale.md</a> with its date and source. The weights table is regenerated by <code>/x-algo</code> and pinned to a commit.</p></details>
+      <details><summary>What was tested, and where</summary><p>Locally on Python 3.15 and 3.9.25 on Windows, and in CI on 3.9, 3.11 and 3.13 on ubuntu and windows. Not tested on macOS.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- 8. INSTALL -->
+<section class="section" id="install" aria-labelledby="install-title">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="num">06</span> Install</p>
+      <h2 id="install-title">Three ways in.</h2>
+      <p class="sec-sub">Then copy <code>templates/voice.md</code> to <code>~/.claude/x/voice.md</code> and fill it in, or give Claude three of your own posts and ask it to write your voice file.</p>
+    </header>
+    <div class="install reveal">
+      <div class="seg seg-wide" role="tablist" aria-label="Install method" id="install-tabs">
+        <button role="tab" id="it-1" aria-controls="ip-1" aria-selected="true" tabindex="0">Plugin</button>
+        <button role="tab" id="it-2" aria-controls="ip-2" aria-selected="false" tabindex="-1">Manual copy</button>
+        <button role="tab" id="it-3" aria-controls="ip-3" aria-selected="false" tabindex="-1">Paste one skill</button>
+      </div>
+      <div role="tabpanel" id="ip-1" aria-labelledby="it-1">
+        <p>In Claude Code:</p>
+        <div class="code-wrap"><pre tabindex="0"><code id="code-1">/plugin marketplace add MuhammadHassan03/x-agent-skill
+/plugin install x-agent@x-agent-skill</code></pre><button class="copy" type="button" data-target="code-1">Copy</button></div>
+      </div>
+      <div role="tabpanel" id="ip-2" aria-labelledby="it-2" hidden>
+        <p>Keep the <code>x-*</code> skill folders side by side: several import from <code>x-post</code>. The <code>references/</code> and <code>templates/</code> folders stay in the clone.</p>
+        <div class="code-wrap"><pre tabindex="0"><code id="code-2">git clone https://github.com/MuhammadHassan03/x-agent-skill.git
+cp -r x-agent-skill/skills/x-* ~/.claude/skills/</code></pre><button class="copy" type="button" data-target="code-2">Copy</button></div>
+      </div>
+      <div role="tabpanel" id="ip-3" aria-labelledby="it-3" hidden>
+        <p>No Claude Code at all: paste one <code>SKILL.md</code> at the top of a chat and it runs as a mode. You lose the Python tools, which is most of the point of <code>/x-post</code>, <code>/x-reply</code> and <code>/x-human</code>, but the writing rules still apply.</p>
+        <div class="code-wrap"><pre tabindex="0"><code id="code-3">https://github.com/MuhammadHassan03/x-agent-skill/tree/master/skills</code></pre><button class="copy" type="button" data-target="code-3">Copy</button></div>
+      </div>
+      <p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
+      <p class="micro">Commands in the skills are written for <code>python</code> or <code>python3</code>, whichever your system calls Python 3.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. DOGFOOD -->
+<section class="section alt" id="dogfood" aria-labelledby="dogfood-title">
+  <div class="wrap narrow">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="num">07</span> 30-day dogfood</p>
+      <h2 id="dogfood-title">In progress. Numbers land <span class="nowrap">2026-11-19.</span></h2>
+    </header>
+    <div class="dog reveal">
+      <div class="dog-meter" aria-hidden="true"><i id="dog-fill" style="--p:0"></i></div>
+      <p class="dog-line" id="dog-line">Day 1 of 30 starts on 2026-10-21.</p>
+      <p>One free account, 2026-10-21 to 2026-11-19: one post a day, 5 to 10 replies, link in the first reply, a real hand edit on every draft. On day 30 the author exports their own analytics CSV and runs <code>measurement/dogfood/report.py</code>, which prints aggregates only. The result goes in the README unedited, good or bad.</p>
+      <p>One account over one month shows nothing about cause. Until then there are no dogfood numbers, and none are implied anywhere on this page. <a href="https://github.com/MuhammadHassan03/x-agent-skill/blob/master/DOGFOOD.md">Read the routine</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10. CTA -->
+<section class="cta" aria-labelledby="cta-title">
+  <div class="wrap">
+    <h2 id="cta-title" class="reveal">Start with one idea.</h2>
+    <p class="reveal">Free, MIT, nothing to connect. The skills write, you post.</p>
+    <div class="cta-row center reveal">
+      <a class="btn btn-primary" href="#install">Install it</a>
+      <a class="btn btn-ghost" href="https://github.com/MuhammadHassan03/x-agent-skill">View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap foot">
+    <p>MIT. Copyright (c) 2026 Muhammad Hassan.</p>
+    <ul>
+      <li><a href="https://github.com/MuhammadHassan03/x-agent-skill">Repository</a></li>
+      <li><a href="https://github.com/MuhammadHassan03/x-agent-skill/blob/master/references/x-rules.md">X rules it follows</a></li>
+      <li><a href="https://github.com/MuhammadHassan03/x-agent-skill/blob/master/SECURITY.md">Security</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
