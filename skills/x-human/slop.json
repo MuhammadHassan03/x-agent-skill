@@ -24,7 +24,7 @@
     {"cp": "U+2002", "name": "EN SPACE", "action": "space"}
   ],
   "typographic": [
-    {"from": "—", "name": "EM DASH", "to": ", "},
+    {"from": "\u2014", "name": "EM DASH", "to": ", "},
     {"from": "–", "name": "EN DASH", "to": "-"},
     {"from": "‘", "name": "LEFT SINGLE QUOTE", "to": "'"},
     {"from": "’", "name": "RIGHT SINGLE QUOTE", "to": "'"},

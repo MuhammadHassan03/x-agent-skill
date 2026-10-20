@@ -111,7 +111,7 @@ def check_fingerprint(text: str) -> Result:
     if not text.strip():
         return None, "empty"
     invisible = sum(1 for c in text if unicodedata.category(c) == "Cf" and c != "‍")
-    em = text.count("—")
+    em = text.count("\u2014")
     curly = sum(text.count(c) for c in "‘’“”")
     ellip = text.count("…")
     hard = sum(text.count(c) for c in "   ")

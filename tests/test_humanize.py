@@ -40,8 +40,8 @@ def test_stray_zwj_outside_emoji_removed():
 
 
 def test_em_dash_becomes_comma_and_no_dashes_remain():
-    out, _ = clean("I tried it—it worked. Pages 5–10 help.")
-    assert "—" not in out and "–" not in out
+    out, _ = clean("I tried it\u2014it worked. Pages 5–10 help.")
+    assert "\u2014" not in out and "–" not in out
     assert "5-10" in out and "I tried it, it worked" in out
 
 
@@ -80,9 +80,9 @@ def test_structures_flagged_not_rewritten():
 
 def test_full_sample_end_state():
     out, rep = clean(SLOP)
-    body = out.replace("https://example.com/a–b—c", "")
-    assert "—" not in body and "​" not in out and " " not in out
-    assert "https://example.com/a–b—c" in out      # URL protected, dashes inside kept
+    body = out.replace("https://example.com/a–b\u2014c", "")
+    assert "\u2014" not in body and "​" not in out and " " not in out
+    assert "https://example.com/a–b\u2014c" in out      # URL protected, dashes inside kept
     assert "leverage" not in out.lower() and "kicker" not in out
 
 

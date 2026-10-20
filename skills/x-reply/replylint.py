@@ -84,7 +84,7 @@ REASON = re.compile(r"\b(because|since|which is why|the reason|so that|that'?s w
 EMOJI_ONLY = re.compile(r"^[\W_\U0001F300-\U0001FAFF☀-➿]+$")
 STOP = set("the a an and or but if of to in on for with at by from as is are was were be been it its this that these those "
            "i you he she we they them my your our their not no yes so do does did have has had will would can could should "
-           "just very really more most than then there here what which who whom how why when where about into over".split())
+           "just very really more most than then there here what which who whom how why when where about into over because since while after before also got get".split())
 
 
 def words(text: str) -> List[str]:

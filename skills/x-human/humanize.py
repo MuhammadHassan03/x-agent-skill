@@ -115,8 +115,8 @@ def pass_typographic(text: str, lex: Dict[str, Any]) -> Tuple[str, List[Dict[str
             continue
         hits.append({"name": f"{ch.encode('unicode_escape').decode()} {entry['name']}", "count": n,
                      "to": entry["to"].strip() or "(space)"})
-        if ch == "—":
-            text = re.sub(r"\s*—\s*", ", ", text)
+        if ch == "\u2014":
+            text = re.sub(r"\s*\u2014\s*", ", ", text)
         elif ch == "–":
             text = re.sub(r"(?<=\d)\s*–\s*(?=\d)", "-", text)
             text = re.sub(r"\s+–\s+", ", ", text)
