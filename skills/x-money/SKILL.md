@@ -20,6 +20,8 @@ python3 ocr.py status --premium yes --verified-followers 310 --impressions-90d 1
 python3 ocr.py lint posts.txt              # posts separated by a line of ---
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 The user reads their own numbers off their own Creator Studio screen and types
 them in. Nothing is fetched or verified.
 

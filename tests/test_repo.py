@@ -133,7 +133,7 @@ def test_every_reference_has_a_last_checked_line():
 
 def test_site_is_static_small_and_self_contained():
     site = os.path.join(ROOT, "site")
-    assert sorted(os.listdir(site)) == ["app.js", "index.html", "style.css"]
+    assert sorted(os.listdir(site)) == ["app.js", "apple-touch-icon.png", "favicon-32.png", "icon-64.png", "icon.svg", "index.html", "og.png", "style.css"]
     assert sum(os.path.getsize(os.path.join(site, f)) for f in os.listdir(site)) < 200 * 1024
     html = read(os.path.join(site, "index.html"))
     for url in re.findall(r'<(?:script|link)[^>]+(?:src|href)="([^"]+)"', html):

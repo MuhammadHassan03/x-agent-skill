@@ -22,6 +22,8 @@ python3 swipe.py captured.tsv --min-multiple 3 --top 15
 python3 swipe.py captured.tsv --out ~/.claude/x/swipe.md
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 ## How the data gets here (and how it does not)
 
 The user browses X **themselves, by hand, at human speed**, in their own

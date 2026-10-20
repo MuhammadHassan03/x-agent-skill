@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="x-agent-skill">
+  <rect x="3" y="3" width="506" height="506" rx="110" fill="#0E0F12" stroke="#22262E" stroke-width="6"/>
+  <rect x="140" y="131" width="40" height="250" rx="12" fill="#F2F3F5" transform="rotate(22 160 256)"/>
+  <rect x="280" y="186" width="40" height="180" rx="12" fill="#F2F3F5" transform="rotate(45 300 276)"/>
+  <rect x="280" y="186" width="40" height="180" rx="12" fill="#F2F3F5" transform="rotate(-45 300 276)"/>
+  <rect x="390" y="176" width="28" height="190" rx="7" fill="#FF6A3D"/>
+</svg>

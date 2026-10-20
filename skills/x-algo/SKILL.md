@@ -18,6 +18,8 @@ python3 weights.py param.rs --commit <sha> --date <commit date> -o ../../referen
 python3 weights.py param.rs --commit <sha> --date <commit date> --check ../../references/x-algorithm.md
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 It does **not** fetch anything. The user opens
 `home-mixer/params/param.rs` on GitHub, saves it (or pastes it), and copies the
 commit hash and commit date from the page.

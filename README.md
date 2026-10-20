@@ -1,6 +1,9 @@
+<img src="site/icon-64.png" alt="x-agent-skill mark" width="64" height="64">
+
 # The X agent skill
 
 Site: https://muhammadhassan03.github.io/x-agent-skill/
+By [@mirza_hassan07](https://x.com/mirza_hassan07) on X
 
 Twelve Claude Code skills that run an X (Twitter) account without ever touching X.
 Free, MIT, no signup, no API key, nothing to connect.
@@ -9,21 +12,24 @@ Free, MIT, no signup, no API key, nothing to connect.
 no scraping, no extension and no "paste this in DevTools" script anywhere in this
 repo. X's Automation Rules list "non-API-based forms of automation, such as
 scripting the X website" under Don't and say it may lead to permanent suspension.
-Having a human approve each post does not change who performs the action, so
-nothing here performs it.
+X's page is aimed at developers and defines automation as repeated actions taken
+without a person actively performing them. This repo takes the cautious reading: a
+human posts everything, and nothing here touches X at all.
 
 Every tool is Python standard library only, makes no network calls and uploads
 nothing. They run on your machine, on your text.
 
 ## Why this one
 
-Existing X skills either post through the paid API, run through a scraping proxy,
-or are a prompt file with no measurement. This one is built around three things:
+This pack is built around three things:
 
-1. **Compliant.** Nothing acts on X. `/x-viral` works from posts you note down by
-   hand. `/x-dm` drafts one message at a time for you to send.
-2. **Measured.** The scorer and the outlier ranker were tested on a public corpus,
-   and the result for the scorer is not flattering. It is below, in full.
+1. **Designed not to act on X.** Nothing here posts, likes, follows, DMs or scrapes.
+   `/x-viral` works from posts you note down by hand. `/x-dm` drafts one message at a
+   time for you to send. That is a design choice to stay clear of X's automation rules,
+   not a guarantee about how X will read your account. See `references/x-rules.md`.
+2. **Measured, and the scorer failed.** The post scorer and the outlier ranker were
+   tested on a public corpus. The scorer does not predict likes (AUC 0.50). The full
+   result is below.
 3. **Tools that run.** Ten dependency-free tools, 142 tests, CI on Python 3.9, 3.11
    and 3.13 on Linux and Windows. A repo test fails the build on any em dash, any
    network or browser import in a tool, and any skill that lacks the approval gate.
@@ -181,7 +187,7 @@ news or brand posts. It does mean the link advice rests on a 2025 outside observ
 (Buffer, 18.8M posts), which is labelled "observed, not coded", and not on anything I measured.
 Bait and thread openers were too rare in this corpus to say anything.
 
-**Does the outlier multiple do its job? Yes, and it shows why you need it.**
+**What the outlier multiple shows, and what it does not.** Dividing by an account's own median removes account size, and the numbers below show it does. They do not show that the multiple finds good posts.
 
 | | Spearman with follower count |
 | --- | --- |
@@ -203,9 +209,6 @@ accuracy. Median absolute error of a baseline built from k random posts, in log2
 
 So a 3-post multiple of 3x can be an ordinary post. Capture 10 per account if you can, or
 supply the account's typical views yourself.
-
-**Match rate:** 100%, but that is trivial: each shard holds whole accounts, and every account
-was in the users file. It says nothing about coverage of the 88M-row corpus, of which I used about 7%.
 
 ## 30-day dogfood: in progress, numbers land on 2026-11-19
 

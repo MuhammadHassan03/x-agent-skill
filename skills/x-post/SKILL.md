@@ -19,6 +19,8 @@ python3 postscore.py draft.txt              # hook, specificity, reply pull, lin
 python3 postscore.py --hooks hooks.txt      # rank three candidate first lines
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 ## Before you write
 
 1. Read `~/.claude/x/voice.md` (or `~/.claude/x/<handle>/voice.md`). If it does
@@ -90,6 +92,14 @@ Measured on a public tweet corpus, its score did not predict which tweets beat
 their account's median likes (AUC about 0.50). Treat the number as a lint
 result, never as a forecast, and say so if the user reads it as one. It never says a post is "undetectable"
 or "will go viral".
+
+## Without the tools
+
+If you cannot run the Python tools (for example you pasted only this file), do the checks by hand and
+say so. Count weighted characters yourself: 280 on a free account, a URL counts 23, CJK characters and
+most emoji count 2. Then check: the first line works alone; there is a specific number or event the
+user gave; no "like and repost if" or "follow for more"; no unfilled `{{placeholder}}`; at most one
+hashtag; the link is in a separate first-reply block. Tell the user the score was not run.
 
 ## Approval gate
 

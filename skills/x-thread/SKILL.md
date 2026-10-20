@@ -19,6 +19,8 @@ python3 thread.py draft.txt --pack         # merge short paragraphs
 python3 thread.py draft.txt --json
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 It imports `../x-post/xcount.py`, so keep the plugin folder intact.
 
 ## Before you write

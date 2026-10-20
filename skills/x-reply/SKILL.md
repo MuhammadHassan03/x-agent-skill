@@ -19,6 +19,8 @@ python3 replylint.py reply.txt --parent parent.txt --prior-replies-in-thread 1
 python3 replylint.py reply.txt --json
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 ## What the source shows, and what it does not
 
 From the open-sourced Grox code (`grox/flows/reply_spam/`, commit pinned in
@@ -79,6 +81,13 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)      <- "Great point!"
 - **Batch limit:** draft at most as many replies as the user will read the parent
   posts for. Ten thoughtful replies beat forty quick ones.
 - **No self-reply chains** under other people's posts. One reply, edited.
+
+## Without the tools
+
+If you cannot run `replylint.py`, check by hand and say so: it opens with substance, not "Great point";
+it shares real words with the parent post; it adds a fact, example or counter-point; it is roughly 40 to
+280 weighted characters; no link, no promo, no hashtags; and it is not a second stacked reply in a thread
+you already answered. Tell the user the lint was not run.
 
 ## Approval gate
 

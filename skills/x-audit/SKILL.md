@@ -19,6 +19,8 @@ python3 xanalytics.py analytics.csv --top 10 --json
 python3 xanalytics.py analytics.csv --include-replies
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 X does not document the organic export's columns, so headers are matched
 flexibly. If `xanalytics.py` says it found no impressions column, it prints the
 headers it did find; show them to the user, do not guess a mapping.

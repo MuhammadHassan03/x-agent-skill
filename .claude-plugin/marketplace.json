@@ -1,7 +1,6 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "x-agent-skill",
-  "description": "The X agent skill pack for Claude: compliant, measured, offline",
+  "description": "The X agent skill pack for Claude: designed not to act on X, measured, offline",
   "owner": {
     "name": "Muhammad Hassan",
     "url": "https://github.com/MuhammadHassan03"

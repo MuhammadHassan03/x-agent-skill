@@ -20,6 +20,8 @@ with what a pass looks like, what a fail looks like, and the fix.
 python3 ../x-post/xcount.py bio.txt     # bio must be 160 characters or fewer (weighted)
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 ## Before you write
 
 1. Read `~/.claude/x/voice.md` and `accounts.md` if several handles exist.

@@ -23,6 +23,8 @@ write a 3,000-word draft they cannot post.
 python3 ../x-post/xcount.py article.txt --premium     # 25,000 limit for long posts
 ```
 
+On Windows, where this says `python3`, use `python`.
+
 ## Before you write
 
 1. Read `~/.claude/x/voice.md`. Confirm Premium. Ask what the article is for: a

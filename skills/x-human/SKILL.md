@@ -1,12 +1,11 @@
 ---
 name: x-human
 description: >-
-  Strip the machine fingerprint out of any draft before it goes out: invisible
-  Unicode, em dashes, stock AI vocabulary, X-specific engagement-farm phrases
-  ("let that sink in", "a thread"), then score it on a five-check panel. Use
-  whenever text needs to sound human, when the user says humanize, "does this
-  sound like AI", "remove the em dashes", "de-slop this", or before any post,
-  thread, reply or DM is shown to the user. Never claims undetectable.
+  Clean up a draft: strip invisible Unicode, em dashes, stock AI vocabulary and
+  engagement-farm phrases like "let that sink in" and "a thread", then score it
+  on a five-check panel. Use when the user says humanize, "does this sound like
+  AI", "remove the em dashes" or "de-slop this". Local heuristics only; never
+  claims a text is undetectable.
 ---
 
 # x-human
@@ -18,6 +17,8 @@ python3 humanize.py draft.txt --report        # clean it, show what changed
 python3 detect.py draft.txt                    # five checks
 python3 detect.py before.txt after.txt         # prove the delta
 ```
+
+On Windows, where this says `python3`, use `python`.
 
 Both read `slop.json`: stock words and phrases with plain replacements, invisible
 character classes, typographic substitutions and structural tells. The
@@ -97,6 +98,13 @@ is the point.
    is normal. Five means the draft was written by formula; the fix is a
    different draft.
 5. Show the cleaned text and the score. Never the score alone.
+
+## Without the tools
+
+If you cannot run `humanize.py` and `detect.py`, edit by hand and say so: replace em dashes with a comma
+or a full stop, straighten curly quotes, cut stock phrases ("let that sink in", "a thread", "delve",
+"leverage", "it's important to note"), and rewrite flagged shapes ("not just X, it's Y", numbered-emoji
+bullets, hashtag walls, bait). No score is available without the tools; do not invent one.
 
 ## Approval gate
 

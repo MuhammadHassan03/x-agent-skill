@@ -15,7 +15,7 @@ reason to contact. Three messages at most per person. Then stop.
 No tool of its own. Run each message through `/x-human`, and count with
 `../x-post/xcount.py` if the user wants it short.
 
-## The rules that make this legitimate
+## How this stays within X's automation rules (not a guarantee)
 
 X's automation rules forbid unsolicited DMs in bulk or automated form, and ask
 people to be thoughtful about contact frequency. So:
