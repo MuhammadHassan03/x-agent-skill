@@ -72,7 +72,7 @@
     <div class="hero-copy reveal">
       <p class="eyebrow">Claude Code skills for X</p>
       <h1 id="hero-title">The skills write.<br>You post.</h1>
-      <p class="lede">Twelve skills and ten offline tools that draft, score and check what you put on X. Nothing here posts, likes, follows, DMs or scrapes. Standard library Python, no network, nothing uploaded.</p>
+      <p class="lede">Twelve skills and ten offline tools that draft, lint and humanize what you post on X. Nothing here posts, scrapes or predicts reach.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="#install">Install it</a>
         <a class="btn btn-ghost" href="https://github.com/MuhammadHassan03/x-agent-skill">Read the source</a>
@@ -138,7 +138,7 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
     <p class="sr-only" id="filter-status" role="status" aria-live="polite"></p>
 
     <ul class="skill-grid" id="skill-grid">
-      <li data-cat="write" class="reveal"><details><summary><code>/x-post</code><span>One idea into a post: three hooks from 19 formulas, scored, one humanized draft.</span></summary><p>Tools: <code>postscore.py</code>, <code>xcount.py</code>. Link goes in the first reply, labelled observed, not coded. Anything missing a number becomes <code>{{your number}}</code> and the scorer blocks it.</p></details></li>
+      <li data-cat="write" class="reveal"><details><summary><code>/x-post</code><span>One idea into a post: three hooks from 19 formulas, linted, one humanized draft.</span></summary><p>Tools: <code>postscore.py</code>, <code>xcount.py</code>. Link goes in the first reply, labelled observed, not coded. Anything missing a number becomes <code>{{your number}}</code> and the scorer blocks it.</p></details></li>
       <li data-cat="write" class="reveal"><details><summary><code>/x-thread</code><span>A long draft into a thread of 280-weighted-character posts, links gathered in the last post.</span></summary><p>Tool: <code>thread.py</code>. Splits at paragraph, then sentence, then word. Warns when a removed link leaves a dangling sentence.</p></details></li>
       <li data-cat="write" class="reveal"><details><summary><code>/x-reply</code><span>Replies under bigger accounts, checked against an approximation of the 0 to 3 reply rubric.</span></summary><p>Tool: <code>replylint.py</code>. Refuses compliment-only openers and stacked self-replies. The real rubric prompt is not published; the bands are an approximation.</p></details></li>
       <li data-cat="write" class="reveal"><details><summary><code>/x-article</code><span>Long-form outline, draft, first-screen hook and an originality checklist.</span></summary><p>Premium feature, documented but not tested by the author. Free accounts get pointed to <code>/x-thread</code>.</p></details></li>

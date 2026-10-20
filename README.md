@@ -5,7 +5,8 @@
 Site: https://muhammadhassan03.github.io/x-agent-skill/
 By [@mirza_hassan07](https://x.com/mirza_hassan07) on X
 
-Twelve Claude Code skills that run an X (Twitter) account without ever touching X.
+Twelve skills and ten offline tools that draft, lint and humanize what you post on X.
+Nothing here posts, scrapes or predicts reach.
 Free, MIT, no signup, no API key, nothing to connect.
 
 **The skills write. You post.** There is no X API client, no browser automation,
@@ -73,7 +74,7 @@ several accounts see `templates/accounts.md`.
 
 | command | what it does | tool |
 | --- | --- | --- |
-| `/x-post` | One idea into a post. Three hooks from [19 formulas](skills/x-post/hooks.json), scored, one humanized draft, counted the way X counts. | `postscore.py`, `xcount.py` |
+| `/x-post` | One idea into a post. Three hooks from [19 formulas](skills/x-post/hooks.json), linted, one humanized draft, counted the way X counts. | `postscore.py`, `xcount.py` |
 | `/x-thread` | A long draft into a thread, 280 weighted characters per post, links gathered in the last post. | `thread.py` |
 | `/x-reply` | Replies under other people's posts, checked against an approximation of the 0-3 reply rubric. Refuses compliment-only openers and self-reply chains. | `replylint.py` |
 | `/x-viral` | Ranks posts you collected by hand by multiple over each account's own median. Never browses X. | `swipe.py` |
