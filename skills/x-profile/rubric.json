@@ -1,0 +1,100 @@
+{
+  "version": "1.0",
+  "note": "100-point rubric for an X profile. Score each item 0 to its points, add the total, then rewrite the items that lost the most points first. Premium-only features (long bio links, badges) are deliberately not scored.",
+  "total": 100,
+  "bands": {
+    "85-100": "ready",
+    "65-84": "fixable in one sitting",
+    "0-64": "rewrite the promise first, everything else depends on it"
+  },
+  "items": [
+    {
+      "id": "bio-promise",
+      "name": "Bio states who it is for and what changes",
+      "points": 20,
+      "passes_when": "The bio says who you help and the concrete outcome, in plain words a stranger gets in 3 seconds.",
+      "fails_when": "Job titles only, 'passionate about', a list of interests, or a promise with no object.",
+      "fix": "Rewrite as: who you help + the result + one proof point."
+    },
+    {
+      "id": "bio-length",
+      "name": "Bio fits 160 characters and uses them",
+      "points": 5,
+      "passes_when": "Weighted length is 160 or less (run xcount.py) and not under 80.",
+      "fails_when": "Cut off mid-thought, or a 40-character bio that wastes the space.",
+      "fix": "Count it with xcount.py. Cut adjectives before nouns."
+    },
+    {
+      "id": "bio-proof",
+      "name": "One real proof point",
+      "points": 10,
+      "passes_when": "A number, a named client type or a shipped thing the user supplied.",
+      "fails_when": "Adjectives instead of evidence. Any figure the user did not give is a {{your number}} placeholder.",
+      "fix": "Ask the user for one true number. Never invent it."
+    },
+    {
+      "id": "pinned-post",
+      "name": "Pinned post is the best answer to 'why follow you'",
+      "points": 20,
+      "passes_when": "Pinned post is a single strong post (not a thread teaser) that shows the user's best thinking and ends with the path off-platform.",
+      "fails_when": "Pinned post is old news, an announcement of a thread, or empty.",
+      "fix": "Use /x-post to write one pinned post; link in the first reply, not the body."
+    },
+    {
+      "id": "path-off-platform",
+      "name": "A clear next step off X",
+      "points": 10,
+      "passes_when": "Header link or bio link goes to one place (newsletter, booking, product) and the bio says what is there.",
+      "fails_when": "No link, a link tree of eight things, or a link that does not match the promise.",
+      "fix": "One link, one promise, matching the bio."
+    },
+    {
+      "id": "header-link",
+      "name": "Profile website field is used",
+      "points": 5,
+      "passes_when": "The website field points at the single destination.",
+      "fails_when": "Field empty.",
+      "fix": "Fill the website field."
+    },
+    {
+      "id": "banner",
+      "name": "Banner supports the promise",
+      "points": 10,
+      "passes_when": "Banner repeats or extends the promise in 6 words or fewer, readable on mobile, nothing important under the profile photo.",
+      "fails_when": "Stock image, no text, or text hidden by the avatar.",
+      "fix": "Short line, left-aligned away from the avatar, high contrast."
+    },
+    {
+      "id": "name-handle",
+      "name": "Name and handle are easy to say and match",
+      "points": 5,
+      "passes_when": "Display name is the real name or the brand; handle is short, no digits strings.",
+      "fails_when": "Handle full of underscores and numbers, name stuffed with emoji or keywords.",
+      "fix": "Keep the name plain. Put keywords in the bio."
+    },
+    {
+      "id": "photo",
+      "name": "Photo is a clear face or clear mark",
+      "points": 5,
+      "passes_when": "Readable at 48px.",
+      "fails_when": "Tiny full-body shot, logo with illegible text.",
+      "fix": "Crop to the face, plain background."
+    },
+    {
+      "id": "voice-fit",
+      "name": "Profile reads in the same voice as the posts",
+      "points": 5,
+      "passes_when": "Bio, pinned post and last 5 posts sound like one person (check against voice.md).",
+      "fails_when": "Corporate bio over casual posts, or the reverse.",
+      "fix": "Rewrite the bio in the voice from voice.md."
+    },
+    {
+      "id": "no-bait",
+      "name": "No engagement bait or hype in the profile",
+      "points": 5,
+      "passes_when": "No 'follow for more', 'DM me for alpha', income claims, hashtag strings.",
+      "fails_when": "Any of those. Income claims are also an Original Content Rewards risk.",
+      "fix": "Delete them."
+    }
+  ]
+}
