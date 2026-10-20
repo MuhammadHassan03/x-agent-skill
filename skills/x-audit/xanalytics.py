@@ -228,6 +228,9 @@ def read_input(path: str) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Rank your own posts by outlier multiple from an analytics CSV.")
     ap.add_argument("input", help="analytics CSV, or - for stdin")
     ap.add_argument("--top", type=int, default=10)

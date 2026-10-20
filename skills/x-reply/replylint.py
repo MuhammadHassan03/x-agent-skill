@@ -173,6 +173,9 @@ def read_input(path: str) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Lint a draft reply against a 0-3 rubric approximation.")
     ap.add_argument("input", help="reply file, or - for stdin")
     ap.add_argument("--parent", help="file with the post you are replying to")

@@ -165,6 +165,9 @@ def read_input(path: str) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Regenerate references/x-algorithm.md from a pasted param.rs.")
     ap.add_argument("input", help="param.rs, or - for stdin")
     ap.add_argument("--commit", required=True, help="commit hash you read the file at (7-40 hex chars)")

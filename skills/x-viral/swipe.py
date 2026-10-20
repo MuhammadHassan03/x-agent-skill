@@ -198,6 +198,9 @@ def read_input(path: str) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Rank collected posts by outlier multiple over each account's own baseline.")
     ap.add_argument("input", help="CSV/TSV file, or - for stdin")
     ap.add_argument("--min-multiple", type=float, default=3.0)

@@ -249,6 +249,9 @@ def read_input(path: str) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Strip the machine fingerprint out of a draft.")
     ap.add_argument("input", nargs="?", default="-", help="file, or - for stdin")
     ap.add_argument("-o", "--out", help="write cleaned text here instead of stdout")

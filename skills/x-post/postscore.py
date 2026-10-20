@@ -277,6 +277,9 @@ def bar(v: float, width: int = 20) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Score a draft X post offline.")
     ap.add_argument("input", nargs="?", help="draft file, or - for stdin")
     ap.add_argument("--hooks", metavar="FILE", help="rank candidate first lines, one per line")

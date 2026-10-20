@@ -150,6 +150,9 @@ def read_input(path: str) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Weighted post length, the way X counts it.")
     ap.add_argument("input", help="text file, or - for stdin")
     ap.add_argument("--premium", action="store_true", help="check the 25,000 long-post limit")

@@ -177,6 +177,9 @@ def read_input(path: str) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Split a long draft into thread posts.")
     ap.add_argument("input", help="draft file, or - for stdin")
     ap.add_argument("--number", action="store_true", help="prefix posts with i/N")
