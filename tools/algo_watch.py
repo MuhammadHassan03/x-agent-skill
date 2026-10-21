@@ -14,9 +14,9 @@ What it does
   4. With --write it updates references/weights.json, references/x-algorithm.md (commit, dates and
      the weights table, through skills/x-algo/weights.py), prepends an entry to
      references/ALGO-CHANGELOG.md and refreshes the "Algorithm changelog" block in README.md.
-  5. With --diff-out it also writes the dated diff as markdown, for a pull request body.
+  5. With --diff-out it also writes the dated diff as markdown, for a commit message.
 
-It never merges anything and never opens a PR itself; the workflow does that.
+It commits nothing itself. The workflow commits the result to the default branch (no pull request).
 
 Exit codes
   0   nothing changed

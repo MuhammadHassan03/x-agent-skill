@@ -5,7 +5,6 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-  pull-requests: write
   issues: write
 concurrency:
   group: algo-watch
@@ -30,25 +29,26 @@ jobs:
           echo "code=$code" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/algo-err.txt" >&2
           exit 0
-      - name: Open a pull request (never merges)
+      - name: Run the tests on the updated references
+        if: steps.watch.outputs.code == '10'
+        run: |
+          python -m pip install pytest
+          python -m pytest -q
+      - name: Commit the change to the default branch
         if: steps.watch.outputs.code == '10'
         run: |
           date=$(date -u +%F)
           n=$(grep -m1 -oE '[0-9]+ changes?' "$RUNNER_TEMP/algo-diff.md" | grep -oE '^[0-9]+' || echo 0)
-          branch="algo-watch/$date"
-          open=$(gh pr list --state open --json headRefName --jq '[.[] | select(.headRefName | startswith("algo-watch/"))] | length')
-          if [ "$open" != "0" ]; then
-            echo "An algo-watch pull request is already open; not opening another."
-            exit 0
-          fi
+          {
+            echo "weights: $date, $n changes"
+            echo
+            cat "$RUNNER_TEMP/algo-diff.md"
+          } > "$RUNNER_TEMP/commit-msg.txt"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$branch"
           git add references README.md
-          git commit -s -m "weights: $date, $n changes"
-          git push origin "$branch"
-          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" \
-            --title "weights: $date, $n changes" --body-file "$RUNNER_TEMP/algo-diff.md"
+          git commit -s -F "$RUNNER_TEMP/commit-msg.txt"
+          git push origin "HEAD:${{ github.event.repository.default_branch }}"
       - name: Open an issue when the file moved or the parse failed
         if: steps.watch.outputs.code == '2'
         run: |
