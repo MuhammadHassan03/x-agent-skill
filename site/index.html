@@ -307,11 +307,12 @@ back scales with 5 + 15 = 20.</code></pre></div>
         <p class="m-lede">Within-account AUC, hits vs misses, over 1,402 accounts. 0.50 is a coin flip.</p>
         <ul class="bars" aria-label="AUC by predictor">
           <li><span class="b-label">Hook score</span><span class="b-track" aria-hidden="true"><i style="--v:50"></i><b style="--m:50"></b></span><span class="b-val">0.500 <small>(0.494 to 0.506)</small></span></li>
-          <li><span class="b-label">Full postscore total</span><span class="b-track" aria-hidden="true"><i style="--v:44.9"></i><b style="--m:50"></b></span><span class="b-val">0.449 <small>(0.442 to 0.456)</small></span></li>
+          <li><span class="b-label">Full postscore, link cap off</span><span class="b-track" aria-hidden="true"><i style="--v:47.5"></i><b style="--m:50"></b></span><span class="b-val">0.475 <small>(0.469 to 0.482)</small></span></li>
+          <li><span class="b-label">Full postscore, link cap on (default)</span><span class="b-track" aria-hidden="true"><i style="--v:44.9"></i><b style="--m:50"></b></span><span class="b-val">0.449 <small>(0.442 to 0.456)</small></span></li>
           <li><span class="b-label">Baseline: tweet length alone</span><span class="b-track" aria-hidden="true"><i style="--v:59.2"></i><b style="--m:50"></b></span><span class="b-val">0.592 <small>(0.584 to 0.600)</small></span></li>
           <li><span class="b-label">Baseline: number in first line</span><span class="b-track" aria-hidden="true"><i style="--v:52.7"></i><b style="--m:50"></b></span><span class="b-val">0.527 <small>(0.521 to 0.532)</small></span></li>
         </ul>
-        <p class="m-note">The tick marks 0.50. The score does not forecast likes, and a trivial length feature beats it. It was not tuned on this data afterwards. So <code>postscore.py</code> is a lint for the problems it names (placeholders, bait, thread openers, links in the body, over length), not a prediction. The full score was 0.475 before the link hard stop and is 0.449 after it: in this corpus posts with links got more likes, so capping them points the wrong way here. The hard stop is a policy choice resting on a 2025 outside observation, not on this data.</p>
+        <p class="m-note">The tick marks 0.50. The score does not forecast likes, and a trivial length feature beats it. It was not tuned on this data afterwards. So <code>postscore.py</code> is a lint for the problems it names (placeholders, bait, thread openers, links in the body, over length), not a prediction. The link hard stop lowers the full-score AUC from 0.475 (cap off, <code>--allow-link</code>) to 0.449 (cap on): in this corpus posts with links got more likes, so capping them points the wrong way here. The corpus predates the ranker and the link suppression, so the link cap is a policy choice, not a finding.</p>
       </div>
 
       <div role="tabpanel" id="mp-2" aria-labelledby="mt-2" tabindex="0" hidden>

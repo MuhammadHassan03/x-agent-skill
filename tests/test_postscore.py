@@ -136,3 +136,25 @@ def test_crlf_input(tmp_path):
 def test_hooks_mode(tmp_path):
     r = subprocess.run([sys.executable, SCRIPT, "--hooks", fixture("hooks.txt")], capture_output=True, text=True)
     assert r.returncode == 0 and r.stdout.splitlines()[0].startswith("1.")
+
+
+def test_allow_link_turns_the_hard_stop_into_the_old_warning():
+    r = postscore.score(LINKED, allow_link=True)
+    assert MSG not in r["hard_flags"] and r["capped_by"] == []
+    assert r["checks"]["LINK"]["score"] == 35.0
+    assert "Observed, not coded" in r["checks"]["LINK"]["notes"][0]
+    assert r["score"] > postscore.score(LINKED)["score"]
+    assert not r["hard_flags"]
+
+
+def test_allow_link_does_not_unblock_other_problems():
+    r = postscore.score(LINKED + "\n\nLike and repost if you agree", allow_link=True)
+    assert "engagement bait" in r["hard_flags"] and MSG not in r["hard_flags"]
+
+
+def test_cli_allow_link_exit_code(tmp_path):
+    p = tmp_path / "d.txt"
+    p.write_text(LINKED, encoding="utf-8")
+    assert subprocess.run([sys.executable, SCRIPT, str(p)], capture_output=True).returncode == 1
+    r = subprocess.run([sys.executable, SCRIPT, str(p), "--allow-link"], capture_output=True, text=True)
+    assert r.returncode == 0 and "capped" not in r.stdout

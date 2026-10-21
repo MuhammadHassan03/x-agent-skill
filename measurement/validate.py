@@ -20,7 +20,8 @@ Design (all comparisons are WITHIN an account, which removes account size):
 
   1. hook AUC       within-account AUC of the hook score, hits vs misses,
                     macro-averaged over accounts, bootstrap CI over accounts
-  2. full AUC       same for the full postscore total
+  2. full AUC       same for the full postscore total, with the link hard stop on (the default)
+                    and off (--allow-link), so the effect of the cap is visible
   3. baselines      same AUC for trivial features (length, has a number), so the
                     score has to beat something
   4. rule effects   within-account difference in log2(multiple) for tweets that
@@ -132,7 +133,8 @@ def features(text):
     bait = bool(postscore.find_bait(text))
     return {
         "hook": postscore.score_hook_line(first)["score"],
-        "full": postscore.score(text)["score"],
+        "full_cap_on": postscore.score(text)["score"],
+        "full_cap_off": postscore.score(text, allow_link=True)["score"],
         "length": float(xcount.count(text)["weighted"]),
         "has_number": float(bool(NUM.search(first))),
         "link": bool(xcount.count(text)["urls"]),
@@ -167,7 +169,7 @@ def main():
            "tweet_rows_read": total, "rows_matched_to_users": matched,
            "match_rate": round(matched / max(total, 1), 4), "accounts_used": len(names)}
 
-    hook_auc, full_auc, len_auc, num_auc = [], [], [], []
+    hook_auc, full_on_auc, full_off_auc, len_auc, num_auc = [], [], [], [], []
     effects = {k: [] for k in ("link", "bait", "hashtag_wall", "thread_opener", "question", "number_first")}
     raw_likes, mult_all, fol_all = [], [], []
     n_tweets = n_hits = n_miss = 0
@@ -185,7 +187,8 @@ def main():
         n_hits += int(hit.sum())
         n_miss += int(miss.sum())
         if hit.sum() >= 3 and miss.sum() >= 3:
-            for key, store in (("hook", hook_auc), ("full", full_auc), ("length", len_auc), ("has_number", num_auc)):
+            for key, store in (("hook", hook_auc), ("full_cap_on", full_on_auc), ("full_cap_off", full_off_auc),
+                               ("length", len_auc), ("has_number", num_auc)):
                 v = np.array([f[key] for f in feats])
                 store.append(auc(v[hit], v[miss]))
         lm = np.log2(np.maximum(mults, 1 / 64))
@@ -201,7 +204,8 @@ def main():
     res["hits_ge_3x"] = n_hits
     res["misses_lt_1x"] = n_miss
     res["auc_within_account_hits_vs_misses"] = {
-        "hook_score": boot_ci(hook_auc), "full_postscore": boot_ci(full_auc),
+        "hook_score": boot_ci(hook_auc), "full_postscore_link_cap_on": boot_ci(full_on_auc),
+        "full_postscore_link_cap_off": boot_ci(full_off_auc),
         "baseline_length_only": boot_ci(len_auc), "baseline_has_number_in_first_line": boot_ci(num_auc)}
     res["rule_effect_log2_multiple_within_account"] = {
         k: boot_ci(v) for k, v in effects.items()}

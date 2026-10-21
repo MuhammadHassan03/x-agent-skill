@@ -17,7 +17,8 @@ Five checks, each 0-100, combined into one score:
                penalty exists in the open-sourced ranking parameters, but link
                posts from non-Premium accounts were observed to get less reach
                (Buffer, March 2025). The move is always the same: put the link in
-               the first reply. `--split-link` prints the two blocks for you.
+               the first reply. `--split-link` prints the two blocks for you. `--allow-link` turns
+               the hard stop back into a warning for people with a reason.
   BAIT         "like and repost if", "follow for more", "RT if", and friends.
                Bait is a ranking risk AND an Original Content Rewards
                ineligibility problem, so it is flagged twice.
@@ -35,6 +36,7 @@ Usage
   python postscore.py - < draft.txt
   python postscore.py draft.txt --premium      Premium account: link check relaxed
   python postscore.py draft.txt --split-link   print POST and FIRST REPLY blocks (link moved out)
+  python postscore.py draft.txt --allow-link   keep the link in the root post: warning only, no cap
 
 Exit codes: 0 scored (no hard flag), 1 hard flag raised, 2 bad input.
 """
@@ -235,13 +237,21 @@ def split_link(text: str) -> Tuple[str, str]:
     return "\n\n".join(r for r in root if r.strip()), reply
 
 
-def check_link(text: str, premium: bool) -> Tuple[float, str, List[str]]:
+LINK_WARNING = ("link in the body of a free-account post (--allow-link: warning only, no cap). Observed, not coded: "
+                "no link penalty exists in the ranking parameters, but link posts from non-Premium accounts "
+                "were observed to reach less (Buffer, 18.8M posts, March 2025). Move it to the first reply")
+
+
+def check_link(text: str, premium: bool, allow_link: bool = False) -> Tuple[float, str, List[str]]:
     notes: List[str] = []
     n = xcount.count(text)["urls"]
     if n == 0:
         return 100.0, "no link in body", notes
     if premium:
         return 85.0, f"{n} link(s) in body (Premium: observed link suppression applies to non-Premium)", notes
+    if allow_link:
+        notes.append(LINK_WARNING)
+        return 35.0, f"{n} link(s) in body", notes
     notes.append(LINK_MESSAGE)
     return 0.0, f"{n} link(s) in root post", notes
 
@@ -266,13 +276,13 @@ def check_bait(text: str) -> Tuple[float, str, List[str]]:
 WEIGHTS = {"HOOK": 0.25, "SPECIFICITY": 0.25, "REPLY PULL": 0.20, "LINK": 0.15, "BAIT": 0.15}
 
 
-def score(text: str, premium: bool = False) -> Dict[str, object]:
+def score(text: str, premium: bool = False, allow_link: bool = False) -> Dict[str, object]:
     text = text.replace("\r\n", "\n").replace("\r", "\n").strip("\n")
     checks = {
         "HOOK": check_hook(text),
         "SPECIFICITY": check_specificity(text),
         "REPLY PULL": check_reply_pull(text),
-        "LINK": check_link(text, premium),
+        "LINK": check_link(text, premium, allow_link),
         "BAIT": check_bait(text),
     }
     total = sum(checks[k][0] * WEIGHTS[k] for k in WEIGHTS)
@@ -287,7 +297,7 @@ def score(text: str, premium: bool = False) -> Dict[str, object]:
     if len(HASHTAG_RE.findall(text)) > 2:
         hard.append("hashtag wall (more than 2)")
     capped: List[str] = []
-    if not premium and cnt["urls"]:
+    if not premium and not allow_link and cnt["urls"]:
         hard.insert(0, LINK_MESSAGE)
         capped.append("link in root post")
         total = min(total, LINK_CAP)
@@ -334,6 +344,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("input", nargs="?", help="draft file, or - for stdin")
     ap.add_argument("--hooks", metavar="FILE", help="rank candidate first lines, one per line")
     ap.add_argument("--premium", action="store_true", help="account is Premium")
+    ap.add_argument("--allow-link", action="store_true",
+                    help="escape hatch: a link in the root post is a warning, not a hard stop (no score cap)")
     ap.add_argument("--split-link", action="store_true", help="print the post without its link, then the FIRST REPLY block")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
@@ -374,7 +386,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             else:
                 print("\nNo link in the draft, so no FIRST REPLY block.")
         return 0 if root else 1
-    res = score(text, premium=args.premium)
+    res = score(text, premium=args.premium, allow_link=args.allow_link)
     if args.json:
         print(json.dumps(res, indent=2, ensure_ascii=False))
     else:

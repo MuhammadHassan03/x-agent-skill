@@ -20,11 +20,19 @@
       ],
       "n_accounts": 1402
     },
-    "full_postscore": {
+    "full_postscore_link_cap_on": {
       "mean": 0.4488,
       "ci95": [
         0.4416,
         0.4561
+      ],
+      "n_accounts": 1402
+    },
+    "full_postscore_link_cap_off": {
+      "mean": 0.4753,
+      "ci95": [
+        0.4685,
+        0.4823
       ],
       "n_accounts": 1402
     },

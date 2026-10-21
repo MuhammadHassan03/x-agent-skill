@@ -105,6 +105,10 @@ BLOCKING: engagement bait; hashtag wall (more than 2)
   *observed, not coded*. The open-sourced ranking parameters contain no link penalty. Reach loss
   on link posts from non-Premium accounts was observed in March 2025 (Buffer,
   18.8M posts). It is a measurement from outside, not a coded rule.
+- **ALLOW_LINK.** If the user has a reason to keep a link in the root post (say so out loud: it
+  is the one thing the scorer will not let through by default), run `postscore.py draft.txt
+  --allow-link`. The hard stop becomes the old warning, the score is not capped, and the other
+  checks still apply. Never use it on your own initiative.
 - **No bait.** "Like and repost if", "follow for more", "bookmark this" are ranking
   risks and Original Content Rewards ineligibility problems. Cut them.
 - **At most one hashtag.** Zero is normal.

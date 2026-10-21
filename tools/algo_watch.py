@@ -23,6 +23,9 @@ Exit codes
   10  changes found (and written, with --write)
   2   failure: the file moved, the download failed, or the parse looks wrong. The message on stderr
       starts with "FAILURE:" and is what the workflow puts in an issue.
+  3   validation failed: a weight key from the previous weights.json is gone, a weight is not numeric,
+      or a weight moved by more than 10x (to or from zero and sign flips count). Nothing is written;
+      the raw diff goes to --diff-out and the workflow opens an issue instead of committing.
 
 Usage
   python tools/algo_watch.py                       # check only, print the diff
@@ -62,6 +65,58 @@ END = "<!-- algo-changelog:end -->"
 
 class WatchError(Exception):
     """A failure the workflow should turn into an issue."""
+
+
+class ValidationFailed(Exception):
+    """The new parse looks unsafe to commit. Nothing is written; the workflow opens an issue."""
+
+    def __init__(self, problems: List[str], diff: str):
+        super().__init__("; ".join(problems))
+        self.problems = problems
+        self.diff = diff
+
+
+MAX_MOVE = 10.0
+
+
+def is_number(v: Any) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def moved_too_far(before: float, after: float) -> bool:
+    """True when a weight moved by more than 10x in one run.
+
+    Going to or from zero, or flipping sign, counts: the ratio is undefined or negative, and that is
+    exactly the kind of jump a human should look at before it lands on the default branch.
+    """
+    if before == after:
+        return False
+    if before == 0 or after == 0 or (before < 0) != (after < 0):
+        return True
+    ratio = abs(after / before)
+    return ratio > MAX_MOVE or ratio < 1 / MAX_MOVE
+
+
+def validate_update(prev: Optional[Dict[str, Dict[str, Any]]], new: Dict[str, Dict[str, Any]]) -> List[str]:
+    """Checks that must pass before any commit. Returns the list of problems (empty means safe).
+
+    1. every weight key present in the previous weights.json is still present;
+    2. every weight value is numeric;
+    3. no single weight moves by more than 10x in one run.
+    """
+    problems: List[str] = []
+    for name, v in sorted(new.items()):
+        if is_weight(name) and not is_number(v["value"]):
+            problems.append(f"weight {name} is not numeric: {v['value']!r}")
+    if prev:
+        for name in sorted(n for n in prev if is_weight(n)):
+            if name not in new:
+                problems.append(f"weight key missing from the new parse: {name}")
+                continue
+            a, b = prev[name]["value"], new[name]["value"]
+            if is_number(a) and is_number(b) and moved_too_far(a, b):
+                problems.append(f"weight {name} moved from {fmt(a)} to {fmt(b)} (more than {MAX_MOVE:g}x in one run)")
+    return problems
 
 
 def parse_all(text: str) -> Dict[str, Dict[str, Any]]:
@@ -224,13 +279,19 @@ def run(text: str, commit: str, commit_date: str, root: str, today: str, write: 
     unchanged_pin = (not baseline) and prev.get("commit") == commit  # type: ignore[union-attr]
     result = {"changes": changes, "n": len(changes), "baseline": baseline, "commit": commit, "date": today,
               "weight_changes": sum(1 for c in changes if c["weight"])}
-    if not baseline and not changes:
+    problems = validate_update(None if baseline else prev["params"], new)  # type: ignore[index]
+    if not baseline and not changes and not problems:
         return result
     diff_md = render_diff(changes, today, commit, commit_date, baseline, len(new))
     result["diff"] = diff_md
+    if problems:
+        diff_md = ("## Validation failed, nothing was committed\n\n" + "\n".join(f"- {p}" for p in problems)
+                   + "\n\nRaw diff:\n\n" + diff_md)
     if diff_out:
         with open(diff_out, "w", encoding="utf-8", newline="\n") as fh:
             fh.write(diff_md)
+    if problems:
+        raise ValidationFailed(problems, diff_md)
     if write and not unchanged_pin:
         os.makedirs(ref, exist_ok=True)
         snap = {"source": SOURCE_URL, "commit": commit, "commit_date": commit_date, "fetched": today, "params": new}
@@ -274,6 +335,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         else:
             text, commit, cdate = fetch(os.environ.get("GITHUB_TOKEN"))
         res = run(text, commit, cdate, args.root, args.today, args.write, args.diff_out)
+    except ValidationFailed as exc:
+        print("VALIDATION FAILED: nothing written, nothing to commit.", file=sys.stderr)
+        for pr in exc.problems:
+            print(f"  - {pr}", file=sys.stderr)
+        return 3
     except (WatchError, OSError, ValueError) as exc:
         print(f"FAILURE: {exc}", file=sys.stderr)
         return 2
