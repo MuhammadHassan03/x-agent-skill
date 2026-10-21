@@ -112,7 +112,7 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
   1x  let that sink in  -&gt; (deleted)   [x]
   1x  leverage          -&gt; use         [verbs]
 <span class="p">$ python detect.py draft.txt clean.txt</span>
-  17.8 FLAGGED  -&gt;  78.9 PASS   (+61.0)</code></pre></div>
+  17.8 FLAGGED  -&gt;  50.1 REVIEW   (+32.3)</code></pre></div>
       </div>
       <p class="term-note">Excerpts of real output from the repo's tools, run on sample text. The drafts are samples, not claims.</p>
     </div>
@@ -257,13 +257,13 @@ not findings.</code></pre></div>
   1x  leverage                     -&gt; use         [verbs]
 4. STRUCTURAL TELLS  (not auto-fixed, rewrite these yourself)
   2x  Numbered emoji bullets</code></pre></div>
-        <div role="tabpanel" id="tp-8" aria-labelledby="tt-8" hidden><p class="tool-desc">Five local heuristics, not GPTZero, Originality or any third-party detector. Checks that need more text than a short post has are left out, not faked.</p><pre tabindex="0"><code><span class="p">$ python detect.py draft.txt clean.txt</span>
+        <div role="tabpanel" id="tp-8" aria-labelledby="tt-8" hidden><p class="tool-desc">Five local heuristics, not GPTZero, Originality or any third-party detector. Checks that need more text than a short post has are left out, not faked. This is one mechanical pass on a sample draft: better, still not a pass.</p><pre tabindex="0"><code><span class="p">$ python detect.py draft.txt clean.txt</span>
   FINGERPRINT   ........................   0.0
                 1 invisible, 2 em dash, 4 curly quote, 0 ellipsis
   HUMAN SCORE   ####....................  17.8   FLAGGED
   ...
-  HUMAN SCORE   ###################.....  78.9   PASS
-  17.8 FLAGGED  -&gt;  78.9 PASS   (+61.0)</code></pre></div>
+  HUMAN SCORE   ############............  50.1   REVIEW
+  17.8 FLAGGED  -&gt;  50.1 REVIEW   (+32.3)</code></pre></div>
         <div role="tabpanel" id="tp-9" aria-labelledby="tt-9" hidden><p class="tool-desc">Original Content Rewards thresholds and an ineligible-content linter. Refuses to estimate earnings without your own rate.</p><pre tabindex="0"><code><span class="p">$ python ocr.py status --premium no --verified-followers 310 ...</span>
 NOT ELIGIBLE
   MISS active Premium plan: no: enrollment needs an active Premium plan

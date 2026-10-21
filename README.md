@@ -126,8 +126,11 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)      <- "Great point!"
 phrases like "let that sink in", flags structural tells for you to rewrite, then scores.
 
 ```
-  17.8 FLAGGED  ->  78.9 PASS   (+61.0)
+  17.8 FLAGGED  ->  50.1 REVIEW   (+32.3)
 ```
+
+That is one mechanical pass on a sample draft: better, still not a pass. The structural tells it
+flags (numbered-emoji bullets, hashtag walls, "not just X, it's Y") are left for you to rewrite.
 
 X posts are short, so a check that needs more text than the draft has returns "too
 short" and is left out of the verdict instead of scoring a made-up 50.

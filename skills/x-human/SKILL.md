@@ -65,8 +65,10 @@ and no scored check under 55.
 Real before and after on a sample draft:
 
 ```
-  17.8 FLAGGED  ->  78.9 PASS   (+61.0)
+  17.8 FLAGGED  ->  50.1 REVIEW   (+32.3)
 ```
+
+That is one mechanical pass: better, still not a pass. The structural tells are left for you to rewrite.
 
 ```
 19 machine artefacts removed, 3 structural tells flagged for rewrite
