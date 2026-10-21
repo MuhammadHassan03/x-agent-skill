@@ -1,4 +1,5 @@
 # Copyright (c) 2026 Muhammad Hassan. MIT License.
+import json
 import subprocess
 import sys
 
@@ -68,6 +69,7 @@ def test_cli_write_and_check(tmp_path):
 
 def test_committed_reference_matches_tool_output():
     md = open(ROOT + "/references/x-algorithm.md", encoding="utf-8").read()
-    assert "74d49a4ffb398949a5f9312f828d7112d7d31f00" in md
+    pin = json.load(open(ROOT + "/references/weights.json", encoding="utf-8"))["commit"]
+    assert pin in md
     v = weights.previous_values(md)
     assert v["FavoriteWeight"] == 0.66 and v["ReplyWeight"] == 5.0

@@ -2,8 +2,10 @@
 
 ## What this repo does with your data
 
-Nothing leaves your machine. Every tool is Python standard library only and
-makes no network calls. There is no telemetry, no analytics and no update
+Nothing leaves your machine. Every tool the skills use is Python standard library only and
+makes no network calls. The one exception is `tools/algo_watch.py`, a maintainer script that CI runs
+weekly; it fetches one public file (`home-mixer/params/param.rs` from xai-org/x-algorithm) through the
+GitHub API and sends nothing about you or your text. There is no telemetry, no analytics and no update
 check. There are no secrets to configure and none should ever be committed.
 
 Voice and log files live in `~/.claude/x/` on your own disk.

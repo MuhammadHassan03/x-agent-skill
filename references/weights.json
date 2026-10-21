@@ -1,0 +1,998 @@
+{
+ "commit": "7f2ca2b914cadac591ea7fceec0c477e473d3dee",
+ "commit_date": "2026-10-21T00:52:08Z",
+ "fetched": "2026-10-21",
+ "params": {
+  "AdsBlenderType": {
+   "key": "rust_home_mixer_ads_blender",
+   "type": "String",
+   "value": "multi_risk"
+  },
+  "AdsTimeGapClampHi": {
+   "key": "rust_home_mixer_ads_time_gap_clamp_hi",
+   "type": "f64",
+   "value": 2.0
+  },
+  "AdsTimeGapClampLo": {
+   "key": "rust_home_mixer_ads_time_gap_clamp_lo",
+   "type": "f64",
+   "value": 0.5
+  },
+  "AdsTimeGapMinOrganicGap": {
+   "key": "rust_home_mixer_ads_time_gap_min_organic_gap",
+   "type": "u32",
+   "value": 3
+  },
+  "AdsTimeGapTSec": {
+   "key": "rust_home_mixer_ads_time_gap_t_sec",
+   "type": "f64",
+   "value": 4.0
+  },
+  "AuthorIsControl": {
+   "key": "rust_home_mixer_author_is_control",
+   "type": "bool",
+   "value": false
+  },
+  "AuthorIsTreatment": {
+   "key": "rust_home_mixer_author_is_treatment",
+   "type": "bool",
+   "value": false
+  },
+  "AuthorPhoenixMoeEnabled": {
+   "key": "rust_home_mixer_author_phoenix_moe_enabled",
+   "type": "bool",
+   "value": false
+  },
+  "AuthorServedMetricsAuthorIds": {
+   "key": "rust_home_mixer_author_served_metrics_author_ids",
+   "type": "Vec<u64>",
+   "value": "vec![]"
+  },
+  "AuthorZeroFavCodivertIsControl": {
+   "key": "rust_home_mixer_author_zero_fav_codivert_is_control",
+   "type": "bool",
+   "value": false
+  },
+  "AuthorZeroFavCodivertIsTreatment": {
+   "key": "rust_home_mixer_author_zero_fav_codivert_is_treatment",
+   "type": "bool",
+   "value": false
+  },
+  "BidirectionalFollowDwellWeightBoost": {
+   "key": "rust_home_mixer_bidirectional_follow_dwell_weight_boost",
+   "type": "f64",
+   "value": 0.0
+  },
+  "BidirectionalFollowReplyWeightBoost": {
+   "key": "rust_home_mixer_bidirectional_follow_reply_weight_boost",
+   "type": "f64",
+   "value": 15.0
+  },
+  "BlockAuthorWeight": {
+   "key": "rust_home_mixer_block_author_weight",
+   "type": "f64",
+   "value": -31.2
+  },
+  "ClickWeight": {
+   "key": "rust_home_mixer_click_weight",
+   "type": "f64",
+   "value": 0.3
+  },
+  "ColdStartBetaAlpha0": {
+   "key": "rust_home_mixer_cold_start_beta_alpha0",
+   "type": "f64",
+   "value": 0.75
+  },
+  "ColdStartBetaBeta0": {
+   "key": "rust_home_mixer_cold_start_beta_beta0",
+   "type": "f64",
+   "value": 49.25
+  },
+  "ColdStartFollowerCap": {
+   "key": "rust_home_mixer_cold_start_follower_cap",
+   "type": "i64",
+   "value": 50000
+  },
+  "ColdStartImpressionScale": {
+   "key": "rust_home_mixer_cold_start_impression_scale",
+   "type": "f64",
+   "value": 1.0
+  },
+  "ColdStartImpressionThreshold": {
+   "key": "rust_home_mixer_cold_start_impression_threshold",
+   "type": "u32",
+   "value": 200
+  },
+  "ColdStartMaxPostAgeSecs": {
+   "key": "rust_home_mixer_cold_start_max_post_age_secs",
+   "type": "u64",
+   "value": 7200
+  },
+  "ColdStartSlotMax": {
+   "key": "rust_home_mixer_cold_start_slot_max",
+   "type": "u32",
+   "value": 16
+  },
+  "ColdStartSlotMin": {
+   "key": "rust_home_mixer_cold_start_slot_min",
+   "type": "u32",
+   "value": 15
+  },
+  "ColdStartTrackedIds": {
+   "key": "rust_home_mixer_cold_start_tracked_ids",
+   "type": "String",
+   "value": ""
+  },
+  "ColdStartTsTopK": {
+   "key": "rust_home_mixer_cold_start_ts_top_k",
+   "type": "u32",
+   "value": 2
+  },
+  "ContClickDwellTimeWeight": {
+   "key": "rust_home_mixer_cont_click_dwell_time_weight",
+   "type": "f64",
+   "value": 0.4
+  },
+  "ContDwellTimeWeight": {
+   "key": "rust_home_mixer_cont_dwell_time_weight",
+   "type": "f64",
+   "value": 0.006
+  },
+  "DwellWeight": {
+   "key": "rust_home_mixer_dwell_weight",
+   "type": "f64",
+   "value": 0.05
+  },
+  "EnableAdAdjacentServedFilter": {
+   "key": "rust_home_mixer_enable_ad_adjacent_served_filter",
+   "type": "bool",
+   "value": false
+  },
+  "EnableAdsAuthorBrandSafetyFallback": {
+   "key": "rust_home_mixer_ads_bs_author_fallback_enabled",
+   "type": "bool",
+   "value": true
+  },
+  "EnableAdsBrandSafetyVerdictV2": {
+   "key": "rust_home_mixer_ads_bs_v2_exp_enabled",
+   "type": "bool",
+   "value": true
+  },
+  "EnableAdsInjectionLogging": {
+   "key": "rust_home_mixer_enable_ads_injection_logging",
+   "type": "bool",
+   "value": true
+  },
+  "EnableAdsSource": {
+   "key": "rust_home_mixer_enable_ads_source",
+   "type": "bool",
+   "value": true
+  },
+  "EnableAiTrendFeedbackContext": {
+   "key": "rust_home_mixer_enable_ai_trend_feedback_context",
+   "type": "bool",
+   "value": false
+  },
+  "EnableAllAuthorFollowHydration": {
+   "key": "rust_home_mixer_enable_all_author_follow_hydration",
+   "type": "bool",
+   "value": true
+  },
+  "EnableAuthorServedMetricsExperimentBucket": {
+   "key": "rust_home_mixer_enable_author_served_metrics_experiment_bucket",
+   "type": "bool",
+   "value": false
+  },
+  "EnableBidirectionalFollowHydration": {
+   "key": "rust_home_mixer_enable_bidirectional_follow_hydration",
+   "type": "bool",
+   "value": true
+  },
+  "EnableCachedPosts": {
+   "key": "rust_home_mixer_enable_cached_posts",
+   "type": "bool",
+   "value": true
+  },
+  "EnableColdStartThompsonSampling": {
+   "key": "rust_home_mixer_enable_cold_start_thompson_sampling",
+   "type": "bool",
+   "value": true
+  },
+  "EnableContextFeatures": {
+   "key": "rust_home_mixer_enable_context_features",
+   "type": "bool",
+   "value": true
+  },
+  "EnableEngagementCountsHydration": {
+   "key": "rust_home_mixer_enable_engagement_counts_hydration",
+   "type": "bool",
+   "value": true
+  },
+  "EnableEntryIdRandomHash": {
+   "key": "rust_home_mixer_enable_entry_id_random_hash",
+   "type": "bool",
+   "value": false
+  },
+  "EnableExplicitEngagementSignals": {
+   "key": "rust_home_mixer_enable_explicit_engagement_signals",
+   "type": "bool",
+   "value": true
+  },
+  "EnableFairShareRanking": {
+   "key": "rust_home_mixer_enable_fair_share_ranking",
+   "type": "bool",
+   "value": false
+  },
+  "EnableFavHoldout": {
+   "key": "rust_home_mixer_enable_fav_holdout",
+   "type": "bool",
+   "value": false
+  },
+  "EnableFeedSurvey": {
+   "key": "rust_home_mixer_enable_feed_survey",
+   "type": "bool",
+   "value": false
+  },
+  "EnableFollowingRepliedUsersFacepile": {
+   "key": "rust_home_mixer_enable_following_replied_users_facepile",
+   "type": "bool",
+   "value": false
+  },
+  "EnableHomeExcursionScores": {
+   "key": "rust_home_mixer_enable_home_excursion_scores",
+   "type": "bool",
+   "value": false
+  },
+  "EnableImplicitEngagementSignals": {
+   "key": "rust_home_mixer_enable_implicit_engagement_signals",
+   "type": "bool",
+   "value": true
+  },
+  "EnableInferredGenderHydration": {
+   "key": "rust_home_mixer_enable_inferred_gender_hydration",
+   "type": "bool",
+   "value": true
+  },
+  "EnableInventoryHoldout": {
+   "key": "rust_home_mixer_enable_inventory_holdout",
+   "type": "bool",
+   "value": false
+  },
+  "EnableIpFeature": {
+   "key": "rust_home_mixer_enable_geo_features",
+   "type": "bool",
+   "value": true
+  },
+  "EnableJetfuelFrameMlbCarousel": {
+   "key": "rust_home_mixer_jetfuel_frame_mlb_carousel_enabled",
+   "type": "bool",
+   "value": false
+  },
+  "EnableJetfuelFrameNfl": {
+   "key": "rust_home_mixer_jetfuel_frame_nfl_enabled",
+   "type": "bool",
+   "value": false
+  },
+  "EnableJetfuelFrameNflTimelinePinned": {
+   "key": "rust_home_mixer_jetfuel_frame_nfl_timeline_pinned_enabled",
+   "type": "bool",
+   "value": false
+  },
+  "EnableJetfuelFrameNflTimelineRotation": {
+   "key": "rust_home_mixer_jetfuel_frame_nfl_timeline_rotation_enabled",
+   "type": "bool",
+   "value": false
+  },
+  "EnableJetfuelFrameSoccer": {
+   "key": "rust_home_mixer_jetfuel_frame_soccer_enabled",
+   "type": "bool",
+   "value": false
+  },
+  "EnableJetfuelFrames": {
+   "key": "rust_home_mixer_enable_jetfuel_frames",
+   "type": "bool",
+   "value": false
+  },
+  "EnableMutualFollowJaccardHydration": {
+   "key": "rust_home_mixer_enable_mutual_follow_jaccard_hydration",
+   "type": "bool",
+   "value": false
+  },
+  "EnableNewUserMinEngagementFilter": {
+   "key": "rust_home_mixer_enable_new_user_min_engagement_filter",
+   "type": "bool",
+   "value": false
+  },
+  "EnablePhoenixMOESource": {
+   "key": "rust_home_mixer_enable_phoenix_moe_source",
+   "type": "bool",
+   "value": false
+  },
+  "EnablePhoenixOonReplies": {
+   "key": "rust_home_mixer_enable_phoenix_oon_replies",
+   "type": "bool",
+   "value": false
+  },
+  "EnablePhoenixRequestCacheSideEffect": {
+   "key": "rust_home_mixer_enable_phoenix_request_cache_side_effect",
+   "type": "bool",
+   "value": true
+  },
+  "EnablePhoenixRetrievalStatsExperimentBucket": {
+   "key": "rust_home_mixer_enable_phoenix_retrieval_stats_experiment_bucket",
+   "type": "bool",
+   "value": false
+  },
+  "EnablePhoenixScoreStatsExperimentBucket": {
+   "key": "rust_home_mixer_enable_phoenix_score_stats_experiment_bucket",
+   "type": "bool",
+   "value": false
+  },
+  "EnablePhoenixSource": {
+   "key": "rust_home_mixer_enable_phoenix_source",
+   "type": "bool",
+   "value": true
+  },
+  "EnablePopularPostsSource": {
+   "key": "rust_home_mixer_enable_popular_posts_source",
+   "type": "bool",
+   "value": true
+  },
+  "EnablePostEngagers": {
+   "key": "rust_home_mixer_enable_post_engagers",
+   "type": "bool",
+   "value": false
+  },
+  "EnablePrompts": {
+   "key": "rust_home_mixer_enable_prompts",
+   "type": "bool",
+   "value": true
+  },
+  "EnablePublishSeenIdsToKafka": {
+   "key": "rust_home_mixer_enable_publish_seen_ids_kafka",
+   "type": "bool",
+   "value": true
+  },
+  "EnableQuotedVqvDurationCheck": {
+   "key": "rust_home_mixer_enable_quoted_vqv_duration_check",
+   "type": "bool",
+   "value": false
+  },
+  "EnableRanking": {
+   "key": "rust_home_mixer_enable_ranking",
+   "type": "bool",
+   "value": true
+  },
+  "EnableResponseDiversityStatsExperimentBucket": {
+   "key": "rust_home_mixer_enable_response_diversity_stats_experiment_bucket",
+   "type": "bool",
+   "value": false
+  },
+  "EnableRetrievalSequenceHydration": {
+   "key": "rust_home_mixer_enable_retrieval_sequence_hydration",
+   "type": "bool",
+   "value": true
+  },
+  "EnableScoringSequenceHydration": {
+   "key": "rust_home_mixer_enable_scoring_sequence_hydration",
+   "type": "bool",
+   "value": true
+  },
+  "EnableSemanticIdHydration": {
+   "key": "rust_home_mixer_enable_semantic_id_hydration",
+   "type": "bool",
+   "value": true
+  },
+  "EnableSerendipityStatsExperimentBucket": {
+   "key": "rust_home_mixer_enable_serendipity_stats_experiment_bucket",
+   "type": "bool",
+   "value": false
+  },
+  "EnableServedFilterAllRequests": {
+   "key": "rust_home_mixer_enable_served_filter_all_requests",
+   "type": "bool",
+   "value": true
+  },
+  "EnableSidSource": {
+   "key": "rust_home_mixer_enable_sid_source",
+   "type": "bool",
+   "value": false
+  },
+  "EnableSimclustersSource": {
+   "key": "rust_home_mixer_enable_simclusters_source",
+   "type": "bool",
+   "value": true
+  },
+  "EnableTopicFeedbackContext": {
+   "key": "rust_home_mixer_enable_topic_feedback_context",
+   "type": "bool",
+   "value": false
+  },
+  "EnableTweetMixerSource": {
+   "key": "rust_home_mixer_enable_tweet_mixer_source",
+   "type": "bool",
+   "value": false
+  },
+  "EnableUnderTheHood": {
+   "key": "rust_home_mixer_enable_under_the_hood",
+   "type": "bool",
+   "value": false
+  },
+  "EnableUrtMigrationComponents": {
+   "key": "rust_home_mixer_enable_urt_migration_components",
+   "type": "bool",
+   "value": true
+  },
+  "EnableUserInstalledAppsHydration": {
+   "key": "rust_home_mixer_enable_user_installed_apps_hydration",
+   "type": "bool",
+   "value": true
+  },
+  "EnableUserInstalledAppsV2": {
+   "key": "rust_home_mixer_enable_user_installed_apps_v2",
+   "type": "bool",
+   "value": false
+  },
+  "EnableVideoCarousel": {
+   "key": "rust_home_mixer_enable_video_carousel",
+   "type": "bool",
+   "value": false
+  },
+  "EnableVideoCarouselAuthorDedupe": {
+   "key": "rust_home_mixer_enable_video_carousel_author_dedupe",
+   "type": "bool",
+   "value": true
+  },
+  "EnableVideoCarouselCandidatesLogging": {
+   "key": "rust_home_mixer_enable_video_carousel_candidates_logging",
+   "type": "bool",
+   "value": false
+  },
+  "EnableVideoCarouselEmbeddingDedupe": {
+   "key": "rust_home_mixer_enable_video_carousel_embedding_dedupe",
+   "type": "bool",
+   "value": true
+  },
+  "EnableViewerColdStart": {
+   "key": "rust_home_mixer_enable_viewer_cold_start_boost",
+   "type": "bool",
+   "value": true
+  },
+  "EnableWhoToFollowModule": {
+   "key": "rust_home_mixer_enable_who_to_follow_module",
+   "type": "bool",
+   "value": true
+  },
+  "EnableXaiVfClient": {
+   "key": "rust_home_mixer_enable_xai_vf_client",
+   "type": "bool",
+   "value": true
+  },
+  "EngagementSignalsMaxPerType": {
+   "key": "rust_home_mixer_engagement_signals_max_per_type",
+   "type": "usize",
+   "value": 15
+  },
+  "ExcludeServedTweetIdsDuration": {
+   "key": "rust_home_mixer_exclude_served_tweet_ids_duration_minutes",
+   "type": "u32",
+   "value": 10
+  },
+  "ExcludeServedTweetIdsNumber": {
+   "key": "rust_home_mixer_exclude_served_tweet_ids_number",
+   "type": "usize",
+   "value": 100
+  },
+  "FavoriteWeight": {
+   "key": "rust_home_mixer_favorite_weight",
+   "type": "f64",
+   "value": 0.66
+  },
+  "FeedSurveyFatigueMinutes": {
+   "key": "rust_home_mixer_feed_survey_fatigue_minutes",
+   "type": "u32",
+   "value": 1440
+  },
+  "FollowAuthorWeight": {
+   "key": "rust_home_mixer_follow_author_weight",
+   "type": "f64",
+   "value": 4.0
+  },
+  "FollowingRepliedUsersFacepileMaxPosts": {
+   "key": "rust_home_mixer_following_replied_users_facepile_max_posts",
+   "type": "i64",
+   "value": 0
+  },
+  "FollowingRepliedUsersFacepileMinUsers": {
+   "key": "rust_home_mixer_following_replied_users_facepile_min_users",
+   "type": "i64",
+   "value": 0
+  },
+  "HistoryTopicsEnabled": {
+   "key": "rust_home_mixer_history_topics_enabled",
+   "type": "bool",
+   "value": false
+  },
+  "HistoryTopicsWindowDays": {
+   "key": "rust_home_mixer_history_topics_window_days",
+   "type": "i64",
+   "value": 28
+  },
+  "InventoryHoldoutOriginalsPercent": {
+   "key": "rust_home_mixer_inventory_holdout_originals_percent",
+   "type": "u32",
+   "value": 0
+  },
+  "InventoryHoldoutRepliesPercent": {
+   "key": "rust_home_mixer_inventory_holdout_replies_percent",
+   "type": "u32",
+   "value": 0
+  },
+  "InventoryHoldoutRetweetsPercent": {
+   "key": "rust_home_mixer_inventory_holdout_retweets_percent",
+   "type": "u32",
+   "value": 0
+  },
+  "LogSlateContext": {
+   "key": "rust_home_mixer_log_slate_context",
+   "type": "bool",
+   "value": false
+  },
+  "LowImpressionsMaxPositionRatio": {
+   "key": "rust_home_mixer_low_impressions_max_boost_position_ratio",
+   "type": "f64",
+   "value": 0.97
+  },
+  "MaxPostsToCache": {
+   "key": "rust_home_mixer_max_posts_to_cache",
+   "type": "usize",
+   "value": 750
+  },
+  "MaxSeqLengthRetrieval": {
+   "key": "rust_home_mixer_max_seq_length_retrieval",
+   "type": "u32",
+   "value": 1024
+  },
+  "MaxSeqLengthScoring": {
+   "key": "rust_home_mixer_max_seq_length_scoring",
+   "type": "u32",
+   "value": 1024
+  },
+  "MinVideoDurationMs": {
+   "key": "rust_home_mixer_min_video_duration_ms",
+   "type": "i32",
+   "value": 10000
+  },
+  "MuteAuthorWeight": {
+   "key": "rust_home_mixer_mute_author_weight",
+   "type": "f64",
+   "value": -58.8
+  },
+  "NewUserMinEngagementFilterMaxAccountAgeSecs": {
+   "key": "rust_home_mixer_new_user_min_engagement_filter_max_account_age_secs",
+   "type": "u64",
+   "value": 1800
+  },
+  "NewUserMinEngagementFilterMaxResurrectionAgeSecs": {
+   "key": "rust_home_mixer_new_user_min_engagement_filter_max_resurrection_age_secs",
+   "type": "u64",
+   "value": 1800
+  },
+  "NewUserMinEngagementFilterMetric": {
+   "key": "rust_home_mixer_new_user_min_engagement_filter_metric",
+   "type": "String",
+   "value": "fav"
+  },
+  "NewUserMinEngagementFilterUseRatio": {
+   "key": "rust_home_mixer_new_user_min_engagement_filter_use_ratio",
+   "type": "bool",
+   "value": false
+  },
+  "NewUserMinEngagementThreshold": {
+   "key": "rust_home_mixer_new_user_min_engagement_threshold",
+   "type": "f64",
+   "value": 0.0
+  },
+  "NotDwelledWeight": {
+   "key": "rust_home_mixer_not_dwelled_weight",
+   "type": "f64",
+   "value": -0.02
+  },
+  "NotInterestedWeight": {
+   "key": "rust_home_mixer_not_interested_weight",
+   "type": "f64",
+   "value": -52.272
+  },
+  "OpenLinkWeight": {
+   "key": "rust_home_mixer_open_link_weight",
+   "type": "f64",
+   "value": 0.2
+  },
+  "PhoenixAggregationType": {
+   "key": "rust_home_mixer_phoenix_aggregation_type",
+   "type": "String",
+   "value": "DENSE_WITH_LONG_DWELL"
+  },
+  "PhoenixColdStartMaxResults": {
+   "key": "rust_home_mixer_phoenix_cold_start_max_results",
+   "type": "u32",
+   "value": 200
+  },
+  "PhoenixExperimentOverrides": {
+   "key": "rust_home_mixer_phoenix_experiment_overrides",
+   "type": "String",
+   "value": ""
+  },
+  "PhoenixInferenceClusterId": {
+   "key": "rust_home_mixer_phoenix_inference_cluster_id",
+   "type": "String",
+   "value": "Experiment1Fou"
+  },
+  "PhoenixMOEMaxResults": {
+   "key": "rust_home_mixer_phoenix_moe_max_results",
+   "type": "u32",
+   "value": 0
+  },
+  "PhoenixMaxResults": {
+   "key": "rust_home_mixer_phoenix_max_results",
+   "type": "u32",
+   "value": 1000
+  },
+  "PhoenixMoeCodivertViewerIsControl": {
+   "key": "rust_home_mixer_phoenix_moe_codivert_viewer_is_control",
+   "type": "bool",
+   "value": false
+  },
+  "PhoenixMoeCodivertViewerIsTreatment": {
+   "key": "rust_home_mixer_phoenix_moe_codivert_viewer_is_treatment",
+   "type": "bool",
+   "value": false
+  },
+  "PhoenixMoeColdStartMaxResults": {
+   "key": "rust_home_mixer_phoenix_moe_cold_start_max_results",
+   "type": "u32",
+   "value": 200
+  },
+  "PhoenixOonRepliesRootOnly": {
+   "key": "rust_home_mixer_phoenix_oon_replies_root_only",
+   "type": "bool",
+   "value": false
+  },
+  "PhoenixRankerNewUserHistoryThreshold": {
+   "key": "rust_home_mixer_phoenix_ranker_new_user_history_threshold",
+   "type": "u64",
+   "value": 0
+  },
+  "PhoenixRankerNewUserInferenceClusterId": {
+   "key": "rust_home_mixer_phoenix_ranker_new_user_inference_cluster_id",
+   "type": "String",
+   "value": "Experiment1Fou"
+  },
+  "PhoenixRequestCacheSideEffectTtlSeconds": {
+   "key": "rust_home_mixer_phoenix_request_cache_side_effect_ttl_seconds",
+   "type": "u64",
+   "value": 10800
+  },
+  "PhoenixRetrievalAggregationType": {
+   "key": "rust_home_mixer_phoenix_retrieval_aggregation_type",
+   "type": "String",
+   "value": "DENSE_WITH_LONG_DWELL"
+  },
+  "PhoenixRetrievalExcludeSeenPosts": {
+   "key": "rust_home_mixer_phoenix_retrieval_exclude_seen_posts",
+   "type": "bool",
+   "value": false
+  },
+  "PhoenixRetrievalInferenceClusterId": {
+   "key": "rust_home_mixer_phoenix_retrieval_inference_cluster_id",
+   "type": "String",
+   "value": "Experiment1Fou"
+  },
+  "PhoenixRetrievalMOEInferenceClusterId": {
+   "key": "rust_home_mixer_phoenix_retrieval_moe_inference_cluster_id",
+   "type": "String",
+   "value": "Experiment2Memy04"
+  },
+  "PhoenixRetrievalNewUserHistoryThreshold": {
+   "key": "rust_home_mixer_phoenix_retrieval_new_user_history_threshold",
+   "type": "u64",
+   "value": 0
+  },
+  "PhoenixRetrievalNewUserInferenceClusterId": {
+   "key": "rust_home_mixer_phoenix_retrieval_new_user_inference_cluster_id",
+   "type": "String",
+   "value": "Experiment1Lap7"
+  },
+  "PhoenixRetrievalTopicInferenceClusterId": {
+   "key": "rust_home_mixer_phoenix_retrieval_topic_inference_cluster_id",
+   "type": "String",
+   "value": "Experiment2Fou"
+  },
+  "PhoenixScoresResultSize": {
+   "key": "rust_home_mixer_phoenix_scores_result_size",
+   "type": "u32",
+   "value": 2800
+  },
+  "PhoenixXdsRetrievalMaxRetries": {
+   "key": "rust_home_mixer_phoenix_xds_retrieval_max_retries",
+   "type": "u32",
+   "value": 0
+  },
+  "PhotoExpandWeight": {
+   "key": "rust_home_mixer_photo_expand_weight",
+   "type": "f64",
+   "value": 0.05
+  },
+  "PopularPostsMaxResults": {
+   "key": "rust_home_mixer_popular_posts_max_results",
+   "type": "u32",
+   "value": 500
+  },
+  "PostUnexploredWeight": {
+   "key": "rust_home_mixer_post_unexplored_weight",
+   "type": "f64",
+   "value": 0.015
+  },
+  "ProfileClickWeight": {
+   "key": "rust_home_mixer_profile_click_weight",
+   "type": "f64",
+   "value": 0.0
+  },
+  "QuoteWeight": {
+   "key": "rust_home_mixer_quote_weight",
+   "type": "f64",
+   "value": 5.0
+  },
+  "QuotedClickWeight": {
+   "key": "rust_home_mixer_quoted_click_weight",
+   "type": "f64",
+   "value": 0.05
+  },
+  "QuotedVqvWeight": {
+   "key": "rust_home_mixer_quoted_vqv_weight",
+   "type": "f64",
+   "value": 0.0
+  },
+  "ReactWithVideoWeight": {
+   "key": "rust_home_mixer_react_with_video_weight",
+   "type": "f64",
+   "value": 0.0
+  },
+  "ReplyWeight": {
+   "key": "rust_home_mixer_reply_weight",
+   "type": "f64",
+   "value": 5.0
+  },
+  "ReportWeight": {
+   "key": "rust_home_mixer_report_weight",
+   "type": "f64",
+   "value": -234.0
+  },
+  "RerankerHeadTag": {
+   "key": "rust_home_mixer_reranker_head_tag",
+   "type": "i64",
+   "value": 0
+  },
+  "RetrievalCandidatesKafkaMaxCandidates": {
+   "key": "rust_home_mixer_retrieval_candidates_kafka_max_candidates",
+   "type": "u32",
+   "value": 100000
+  },
+  "RetrievalCandidatesKafkaSamplePercent": {
+   "key": "rust_home_mixer_retrieval_candidates_kafka_sample_percent",
+   "type": "f64",
+   "value": 5.0
+  },
+  "RetrievalValueModelWeights": {
+   "key": "rust_home_mixer_retrieval_value_model_weights",
+   "type": "String",
+   "value": ""
+  },
+  "RetweetWeight": {
+   "key": "rust_home_mixer_retweet_weight",
+   "type": "f64",
+   "value": 1.0
+  },
+  "ShadowTrafficDefaultPercent": {
+   "key": "rust_home_mixer_shadow_traffic_default_percent",
+   "type": "f64",
+   "value": 0.3
+  },
+  "ShadowTrafficPhoenixClusterAggregationTypes": {
+   "key": "rust_home_mixer_shadow_traffic_phoenix_cluster_aggregation_types",
+   "type": "Vec<String>",
+   "value": "vec![\"Experiment16Fou:DENSE_WITH_LONG_DWELL_HOME_EXCURSION\".to_string()]"
+  },
+  "ShadowTrafficPhoenixClusterRates": {
+   "key": "rust_home_mixer_shadow_traffic_phoenix_cluster_rates",
+   "type": "Vec<String>",
+   "value": "vec![]"
+  },
+  "ShadowTrafficPhoenixClustersList": {
+   "key": "rust_home_mixer_shadow_traffic_phoenix_clusters_list",
+   "type": "Vec<String>",
+   "value": "vec![]"
+  },
+  "ShadowTrafficPhoenixRetrievalClustersList": {
+   "key": "rust_home_mixer_shadow_traffic_phoenix_retrieval_clusters_list",
+   "type": "Vec<String>",
+   "value": "vec![]"
+  },
+  "ShareViaCopyLinkWeight": {
+   "key": "rust_home_mixer_share_via_copy_link_weight",
+   "type": "f64",
+   "value": 20.0
+  },
+  "ShareViaDmWeight": {
+   "key": "rust_home_mixer_share_via_dm_weight",
+   "type": "f64",
+   "value": 5.0
+  },
+  "ShareWeight": {
+   "key": "rust_home_mixer_share_weight",
+   "type": "f64",
+   "value": 2.0
+  },
+  "SidServerEndpoint": {
+   "key": "rust_home_mixer_sid_server_endpoint",
+   "type": "String",
+   "value": "xds://xai-recsys-sid-v8-root.prod.recsys-infra:grpc"
+  },
+  "SidSourceMaxPerSeed": {
+   "key": "rust_home_mixer_sid_source_max_per_seed",
+   "type": "u32",
+   "value": 100
+  },
+  "SidSourceMaxResults": {
+   "key": "rust_home_mixer_sid_source_max_results",
+   "type": "u32",
+   "value": 800
+  },
+  "SidSourceMaxSeeds": {
+   "key": "rust_home_mixer_sid_source_max_seeds",
+   "type": "usize",
+   "value": 50
+  },
+  "SidSourceMinPrefixDepth": {
+   "key": "rust_home_mixer_sid_source_min_prefix_depth",
+   "type": "u32",
+   "value": 3
+  },
+  "SimclustersMaxCandidateAgeHours": {
+   "key": "rust_home_mixer_simclusters_max_candidate_age_hours",
+   "type": "i32",
+   "value": 48
+  },
+  "ThunderAlgorithm": {
+   "key": "rust_home_mixer_thunder_algorithm",
+   "type": "String",
+   "value": "default"
+  },
+  "ThunderClusterId": {
+   "key": "rust_home_mixer_thunder_cluster_id",
+   "type": "String",
+   "value": "amp"
+  },
+  "ThunderMaxResults": {
+   "key": "rust_home_mixer_thunder_max_results",
+   "type": "u32",
+   "value": 1200
+  },
+  "TopicFilteringId": {
+   "key": "rust_home_mixer_topic_filtering_experiment_id",
+   "type": "String",
+   "value": "PostBased50Pct"
+  },
+  "TopicFilteringOverrides": {
+   "key": "rust_home_mixer_topic_filtering_overrides",
+   "type": "String",
+   "value": ""
+  },
+  "TweetMixerMaxResults": {
+   "key": "rust_home_mixer_tweet_mixer_max_results",
+   "type": "u32",
+   "value": 800
+  },
+  "UasSourceDataType": {
+   "key": "rust_home_mixer_uas_source_data_type",
+   "type": "String",
+   "value": "NEW_UUA_ARROW"
+  },
+  "UseXdsForUas": {
+   "key": "rust_home_mixer_use_xds_for_uas",
+   "type": "bool",
+   "value": true
+  },
+  "UserActionsClusterId": {
+   "key": "rust_home_mixer_user_actions_cluster_id",
+   "type": "String",
+   "value": "Fou"
+  },
+  "VMRankerClusterId": {
+   "key": "rust_home_mixer_vm_ranker_cluster_id",
+   "type": "String",
+   "value": "Experiment1"
+  },
+  "VMRankerEnableFallback": {
+   "key": "rust_home_mixer_vm_ranker_enable_fallback",
+   "type": "bool",
+   "value": false
+  },
+  "VMRankerSendDebiasInputs": {
+   "key": "rust_home_mixer_vm_ranker_send_debias_inputs",
+   "type": "bool",
+   "value": false
+  },
+  "VMRankerSendHistoryTopics": {
+   "key": "rust_home_mixer_vm_ranker_send_history_topics",
+   "type": "bool",
+   "value": false
+  },
+  "VMRankerSendPacingInputs": {
+   "key": "rust_home_mixer_vm_ranker_send_pacing_inputs",
+   "type": "bool",
+   "value": false
+  },
+  "VideoCarouselEmbeddingDedupeThreshold": {
+   "key": "rust_home_mixer_video_carousel_embedding_dedupe_threshold",
+   "type": "f64",
+   "value": 0.72
+  },
+  "VideoCarouselFatigueMinutes": {
+   "key": "rust_home_mixer_video_carousel_fatigue_minutes",
+   "type": "u32",
+   "value": 60
+  },
+  "VideoCarouselImmersiveAggregationType": {
+   "key": "rust_home_mixer_video_carousel_immersive_aggregation_type",
+   "type": "String",
+   "value": "IMMERSIVE_LONG_DWELL"
+  },
+  "VideoCarouselImmersiveClusterId": {
+   "key": "rust_home_mixer_video_carousel_immersive_cluster_id",
+   "type": "String",
+   "value": "Experiment3Fou"
+  },
+  "VideoCarouselImmersiveVqvWeight": {
+   "key": "rust_home_mixer_video_carousel_immersive_vqv_weight",
+   "type": "f64",
+   "value": 0.0
+  },
+  "VideoCarouselPosition": {
+   "key": "rust_home_mixer_video_carousel_position",
+   "type": "u32",
+   "value": 6
+  },
+  "VideoCarouselSemanticIdDedupeLevels": {
+   "key": "rust_home_mixer_video_carousel_semantic_id_dedupe_levels",
+   "type": "u32",
+   "value": 3
+  },
+  "VideoCarouselVideoOpenWeight": {
+   "key": "rust_home_mixer_video_carousel_video_open_weight",
+   "type": "f64",
+   "value": 1.0
+  },
+  "VideoOpenWeight": {
+   "key": "rust_home_mixer_video_open_weight",
+   "type": "f64",
+   "value": 0.02
+  },
+  "ViewerZeroFavCodivertIsTreatment": {
+   "key": "rust_home_mixer_viewer_zero_fav_codivert_is_treatment",
+   "type": "bool",
+   "value": false
+  },
+  "VqvWeight": {
+   "key": "rust_home_mixer_vqv_weight",
+   "type": "f64",
+   "value": 0.0
+  },
+  "WhoToFollowFatigueHours": {
+   "key": "rust_home_mixer_who_to_follow_fatigue_hours",
+   "type": "u32",
+   "value": 30
+  }
+ },
+ "source": "https://github.com/xai-org/x-algorithm/blob/main/home-mixer/params/param.rs"
+}

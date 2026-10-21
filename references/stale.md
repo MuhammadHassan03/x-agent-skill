@@ -6,7 +6,7 @@ must not state it as fact.
 
 | item | value in repo | checked | source | status |
 |---|---|---|---|---|
-| ranking weights (all) | see x-algorithm.md | 2026-10-21 | https://github.com/xai-org/x-algorithm/blob/main/home-mixer/params/param.rs at commit 74d49a4 | verified, regenerate with `weights.py` |
+| ranking weights (all) | see x-algorithm.md | 2026-10-21 | https://github.com/xai-org/x-algorithm/blob/main/home-mixer/params/param.rs, pinned in references/weights.json | verified, regenerated weekly by `tools/algo_watch.py` |
 | reply scored 0-3 by a Grok model when parent or root has over 250,000 followers | 250,000 | 2026-10-21 | `grox/flows/reply_spam/constants.py`, `task_filter.py` at 74d49a4 | verified in code; the rubric prompt is not published |
 | multi-step reply-spam filter, root followers | 1,000 | 2026-10-21 | `grox/flows/reply_spam/task_multi_step_reply_spam.py` at 74d49a4 | verified in code |
 | coordinated-spam filter, root followers | 180,000 | 2026-10-21 | `task_filter.py` at 74d49a4 | verified in code |

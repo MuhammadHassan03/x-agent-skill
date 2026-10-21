@@ -9,6 +9,7 @@ for name in sorted(os.listdir(SKILLS)):
     if os.path.isdir(path):
         sys.path.insert(0, path)
 
+sys.path.insert(0, os.path.join(ROOT, "tools"))
 FIX = os.path.join(ROOT, "tests", "fixtures")
 
 
