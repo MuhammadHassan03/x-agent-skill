@@ -60,8 +60,8 @@ def test_every_skill_ends_with_the_same_approval_gate():
 
 
 def test_no_em_dashes_anywhere():
-    fixtures = os.path.join(ROOT, "tests", "fixtures")
-    bad = [p for p in text_files() if not p.startswith(fixtures) and "\u2014" in read(p)]
+    exempt = (os.path.join(ROOT, "tests", "fixtures"), os.path.join(ROOT, "demo", "samples"))
+    bad = [p for p in text_files() if not p.startswith(exempt) and "\u2014" in read(p)]
     assert not bad, bad
 
 
@@ -146,3 +146,19 @@ def test_site_has_no_invented_proof():
     html = read(os.path.join(ROOT, "site", "index.html")).lower()
     for word in ("testimonial", "stars", "customers", "trusted by", "users love"):
         assert word not in html, word
+
+
+def test_demo_gif_is_small_1200_wide_and_linked():
+    path = os.path.join(ROOT, "demo", "x-agent-skill.gif")
+    data = open(path, "rb").read()
+    assert data[:6] == b"GIF89a" and len(data) < 3 * 1024 * 1024
+    assert int.from_bytes(data[6:8], "little") == 1200
+    assert "demo/x-agent-skill.gif" in read(os.path.join(ROOT, "README.md"))
+
+
+def test_demo_tape_commands_point_at_real_files():
+    tape = read(os.path.join(ROOT, "demo", "x-agent-skill.tape"))
+    paths = re.findall(r"__PY__ ((?:skills|demo)/[\w./-]+\.(?:py|txt))", tape)
+    assert paths
+    for p in paths:
+        assert os.path.exists(os.path.join(ROOT, p)), p

@@ -9,6 +9,10 @@ Twelve skills and ten offline tools that draft, lint and humanize what you post 
 Nothing here posts, scrapes or predicts reach.
 Free, MIT, no signup, no API key, nothing to connect.
 
+![Terminal demo: postscore.py blocks a bait draft, thread.py splits a long draft, humanize.py and detect.py clean a draft and show the before and after score](demo/x-agent-skill.gif)
+
+*Real output from `postscore.py`, `thread.py`, `humanize.py` and `detect.py` on invented sample drafts ([how it was made](demo/README.md)).*
+
 **The skills write. You post.** There is no X API client, no browser automation,
 no scraping, no extension and no "paste this in DevTools" script anywhere in this
 repo. X's Automation Rules list "non-API-based forms of automation, such as
