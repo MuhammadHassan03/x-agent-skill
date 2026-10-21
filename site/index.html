@@ -96,11 +96,14 @@
 76 / 280 weighted (free)  FITS
   remaining 204, urls 1 (each 23), weight-2 characters 0</code></pre></div>
         <div role="tabpanel" id="hp-2" aria-labelledby="ht-2" hidden><pre tabindex="0"><code><span class="p">$ python postscore.py draft.txt</span>
-POST SCORE  37.1  WEAK   (161/280 weighted)
-  LINK         #######.............  35.0  1 link(s) in body
+POST SCORE  31.8  WEAK   (161/280 weighted)
+score capped at 49: link in root post
+  LINK         ....................   0.0  1 link(s) in root post
   BAIT         ....................   0.0  like/repost solicitation,
                "RT/like if" bait, "follow for more"
-BLOCKING: engagement bait; hashtag wall (more than 2)</code></pre></div>
+BLOCKING: Link in root post. On free accounts, links in the root
+  post were observed to cost reach (observed, not coded). Put it
+  in the first reply.; engagement bait; hashtag wall (more than 2)</code></pre></div>
         <div role="tabpanel" id="hp-3" aria-labelledby="ht-3" hidden><pre tabindex="0"><code><span class="p">$ python replylint.py reply.txt --parent parent.txt</span>
 REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
   FAIL  no generic praise    reads as generic praise or
@@ -138,8 +141,8 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
     <p class="sr-only" id="filter-status" role="status" aria-live="polite"></p>
 
     <ul class="skill-grid" id="skill-grid">
-      <li data-cat="write" class="reveal"><details><summary><code>/x-post</code><span>One idea into a post: three hooks from 19 formulas, linted, one humanized draft.</span></summary><p>Tools: <code>postscore.py</code>, <code>xcount.py</code>. Link goes in the first reply, labelled observed, not coded. Anything missing a number becomes <code>{{your number}}</code> and the scorer blocks it.</p></details></li>
-      <li data-cat="write" class="reveal"><details><summary><code>/x-thread</code><span>A long draft into a thread of 280-weighted-character posts, links gathered in the last post.</span></summary><p>Tool: <code>thread.py</code>. Splits at paragraph, then sentence, then word. Warns when a removed link leaves a dangling sentence.</p></details></li>
+      <li data-cat="write" class="reveal"><details><summary><code>/x-post</code><span>One idea into a post: three hooks from 19 formulas, linted, one humanized draft.</span></summary><p>Tools: <code>postscore.py</code>, <code>xcount.py</code>. A link in the root post is a hard stop on a free account (score capped, draft blocked): it goes in a FIRST REPLY block, labelled observed, not coded. Anything missing a number becomes <code>{{your number}}</code> and the scorer blocks it.</p></details></li>
+      <li data-cat="write" class="reveal"><details><summary><code>/x-thread</code><span>A long draft into a thread of 280-weighted-character posts, links moved to a FIRST REPLY block.</span></summary><p>Tool: <code>thread.py</code>. Splits at paragraph, then sentence, then word. Warns when a removed link leaves a dangling sentence.</p></details></li>
       <li data-cat="write" class="reveal"><details><summary><code>/x-reply</code><span>Replies under bigger accounts, checked against an approximation of the 0 to 3 reply rubric.</span></summary><p>Tool: <code>replylint.py</code>. Refuses compliment-only openers and stacked self-replies. The real rubric prompt is not published; the bands are an approximation.</p></details></li>
       <li data-cat="write" class="reveal"><details><summary><code>/x-article</code><span>Long-form outline, draft, first-screen hook and an originality checklist.</span></summary><p>Premium feature, documented but not tested by the author. Free accounts get pointed to <code>/x-thread</code>.</p></details></li>
       <li data-cat="write" class="reveal"><details><summary><code>/x-dm</code><span>One first message and two follow-ups for one specific person. Then stop.</span></summary><p>One at a time, written for that person, sent by hand. No batches, no merge fields. Drafting only.</p></details></li>
@@ -219,16 +222,17 @@ POST SCORE  93.8  STRONG   (203/280 weighted)
   REPLY PULL   ###############.....  75.0  question present
   LINK         #################### 100.0  no link in body
   BAIT         #################### 100.0  none</code></pre></div>
-        <div role="tabpanel" id="tp-3" aria-labelledby="tt-3" hidden><p class="tool-desc">Splits a long draft into posts of 280 weighted characters or fewer and moves links to the last post.</p><pre tabindex="0"><code><span class="p">$ python thread.py draft.txt</span>
+        <div role="tabpanel" id="tp-3" aria-labelledby="tt-3" hidden><p class="tool-desc">Splits a long draft into posts of 280 weighted characters or fewer. Links never stay in a post: they come out as a separate FIRST REPLY block to post under post 1.</p><pre tabindex="0"><code><span class="p">$ python thread.py draft.txt</span>
 --- post 1/4  (52/280)
 I sent 400 cold DMs in 30 days and 2 became clients.
---- post 4/4  (103/280)
+...
+--- post 4/4  (46/280)
 What is the first line you send to a stranger?
-
+---
+FIRST REPLY (post it as a reply under post 1)
 Full breakdown of the messages:
 https://example.com/dm-breakdown
----
-1 link(s) moved to the last post.</code></pre></div>
+---</code></pre></div>
         <div role="tabpanel" id="tp-4" aria-labelledby="tt-4" hidden><p class="tool-desc">An approximation of the 0 to 3 reply rubric. The real prompt is not published.</p><pre tabindex="0"><code><span class="p">$ python replylint.py reply.txt --parent parent.txt</span>
 REPLY BAND 3/3  STRONG   (125 weighted)
   pass  no generic praise    ok
@@ -303,11 +307,11 @@ back scales with 5 + 15 = 20.</code></pre></div>
         <p class="m-lede">Within-account AUC, hits vs misses, over 1,402 accounts. 0.50 is a coin flip.</p>
         <ul class="bars" aria-label="AUC by predictor">
           <li><span class="b-label">Hook score</span><span class="b-track" aria-hidden="true"><i style="--v:50"></i><b style="--m:50"></b></span><span class="b-val">0.500 <small>(0.494 to 0.506)</small></span></li>
-          <li><span class="b-label">Full postscore total</span><span class="b-track" aria-hidden="true"><i style="--v:47.5"></i><b style="--m:50"></b></span><span class="b-val">0.475 <small>(0.469 to 0.482)</small></span></li>
+          <li><span class="b-label">Full postscore total</span><span class="b-track" aria-hidden="true"><i style="--v:44.9"></i><b style="--m:50"></b></span><span class="b-val">0.449 <small>(0.442 to 0.456)</small></span></li>
           <li><span class="b-label">Baseline: tweet length alone</span><span class="b-track" aria-hidden="true"><i style="--v:59.2"></i><b style="--m:50"></b></span><span class="b-val">0.592 <small>(0.584 to 0.600)</small></span></li>
           <li><span class="b-label">Baseline: number in first line</span><span class="b-track" aria-hidden="true"><i style="--v:52.7"></i><b style="--m:50"></b></span><span class="b-val">0.527 <small>(0.521 to 0.532)</small></span></li>
         </ul>
-        <p class="m-note">The tick marks 0.50. The score does not forecast likes, and a trivial length feature beats it. It was not tuned on this data afterwards. So <code>postscore.py</code> is a lint for the problems it names (placeholders, bait, thread openers, links in the body, over length), not a prediction.</p>
+        <p class="m-note">The tick marks 0.50. The score does not forecast likes, and a trivial length feature beats it. It was not tuned on this data afterwards. So <code>postscore.py</code> is a lint for the problems it names (placeholders, bait, thread openers, links in the body, over length), not a prediction. The full score was 0.475 before the link hard stop and is 0.449 after it: in this corpus posts with links got more likes, so capping them points the wrong way here. The hard stop is a policy choice resting on a 2025 outside observation, not on this data.</p>
       </div>
 
       <div role="tabpanel" id="mp-2" aria-labelledby="mt-2" tabindex="0" hidden>

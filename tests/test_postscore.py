@@ -31,17 +31,59 @@ def test_placeholder_blocks_and_is_not_specific():
     assert r["checks"]["SPECIFICITY"]["score"] == 0.0
 
 
-def test_link_in_body_warns_on_free_not_blocked():
-    r = postscore.score("I shipped a tool in 3 days. Here: https://example.com/tool", premium=False)
-    assert r["checks"]["LINK"]["score"] < 50
-    assert "Observed, not coded" in r["checks"]["LINK"]["notes"][0]
-    assert not r["hard_flags"]
+MSG = ("Link in root post. On free accounts, links in the root post were observed to cost reach "
+       "(observed, not coded). Put it in the first reply.")
+LINKED = ("I sent 400 cold DMs in 30 days and 2 became clients.\n\n"
+          "Full breakdown:\nhttps://example.com/dm-breakdown\n\nWhat do you send first?")
+
+
+def test_link_in_root_post_is_a_hard_stop_on_free():
+    r = postscore.score(LINKED)
+    assert r["score"] <= postscore.LINK_CAP and r["verdict"] == "WEAK"
+    assert r["hard_flags"][0] == MSG and r["capped_by"] == ["link in root post"]
+    assert r["checks"]["LINK"]["score"] == 0.0 and MSG in r["checks"]["LINK"]["notes"]
+
+
+def test_same_draft_without_the_link_is_strong():
+    clean, reply = postscore.split_link(LINKED)
+    r = postscore.score(clean)
+    assert r["score"] > 75 and not r["hard_flags"] and r["capped_by"] == []
+    assert reply == "Full breakdown:\nhttps://example.com/dm-breakdown"
+
+
+def test_premium_is_not_hard_stopped_by_a_link():
+    r = postscore.score(LINKED, premium=True)
+    assert MSG not in r["hard_flags"] and r["capped_by"] == [] and r["score"] > postscore.LINK_CAP
+
+
+def test_split_link_cases():
+    assert postscore.split_link("No link here at all.") == ("No link here at all.", "")
+    root, reply = postscore.split_link("Read it: https://a.example/x and https://b.example/y\n\nSecond paragraph.")
+    assert "http" not in root and reply.splitlines() == ["https://a.example/x", "https://b.example/y"]
+    assert postscore.split_link("https://example.com/x") == ("", "https://example.com/x")
+    root, reply = postscore.split_link(LINKED.replace("\n", "\r\n"))
+    assert "\r" not in root and reply.startswith("Full breakdown:")
+    assert postscore.split_link("Same https://e.example/z twice https://e.example/z")[1] == "https://e.example/z"
+
+
+def test_cli_split_link_prints_both_blocks(tmp_path):
+    p = tmp_path / "d.txt"
+    p.write_text(LINKED, encoding="utf-8")
+    run = lambda *a: subprocess.run([sys.executable, SCRIPT, str(p)] + list(a), capture_output=True, text=True)  # noqa: E731
+    r = run("--split-link")
+    assert r.returncode == 0 and r.stdout.startswith("POST (link removed)\nI sent 400")
+    assert "\nFIRST REPLY\nFull breakdown:\nhttps://example.com/dm-breakdown" in r.stdout
+    p.write_text("No link.", encoding="utf-8")
+    assert "no FIRST REPLY" in run("--split-link").stdout
+    p.write_text("https://example.com/x", encoding="utf-8")
+    assert run("--split-link").returncode == 1
+    assert subprocess.run([sys.executable, SCRIPT, str(tmp_path / "missing"), "--split-link"], capture_output=True).returncode == 2
 
 
 def test_post_that_is_only_a_url():
     r = postscore.score("https://example.com/a/very/long/path")
     assert r["length"]["weighted"] == 23
-    assert r["checks"]["LINK"]["score"] < 50
+    assert r["checks"]["LINK"]["score"] == 0.0 and r["score"] <= postscore.LINK_CAP
 
 
 def test_over_limit_blocks():

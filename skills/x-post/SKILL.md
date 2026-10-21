@@ -17,6 +17,7 @@ them; do not eyeball the hook or the length. Run them from this skill's folder.
 python3 xcount.py draft.txt                 # weighted length, the way X counts
 python3 postscore.py draft.txt              # hook, specificity, reply pull, link, bait
 python3 postscore.py --hooks hooks.txt      # rank three candidate first lines
+python3 postscore.py draft.txt --split-link  # POST and FIRST REPLY blocks, link moved out
 ```
 
 On Windows, where this says `python3`, use `python`.
@@ -44,10 +45,12 @@ On Windows, where this says `python3`, use `python`.
    If the best is under 50, you do not have the hook yet. Get a better fact from
    the user instead of editing.
 3. **Write the draft** on the winning hook. One idea. Plain words. Fits 280
-   weighted characters. The link, if there is one, does not go in the body.
+   weighted characters. A link in the root post is a hard stop on a free account:
+   `postscore.py` caps the score at 49 and blocks the draft.
 4. **Count and score it:** `xcount.py` then `postscore.py`. Fix every flag.
 5. **Humanize it:** run `/x-human` before showing anything.
-6. **Print the block**, with the link as a separate first-reply block.
+6. **Print the post block.** When the draft had a link, ALWAYS print a second block
+   titled FIRST REPLY containing the link, and nothing else. `--split-link` prints both.
 
 Real output (sample draft, free account):
 
@@ -61,6 +64,31 @@ POST SCORE  93.8  STRONG   (203/280 weighted)
   BAIT         #################### 100.0  none
 ```
 
+A draft with a link in the root post is capped and blocked (real output):
+
+```
+
+POST SCORE  49.0  WEAK   (141/280 weighted)
+score capped at 49: link in root post
+----------------------------------------------------------------
+  HOOK         ###################.  95.0  52 weighted characters
+  ...
+BLOCKING: Link in root post. On free accounts, links in the root post were observed to cost reach (observed, not coded). Put it in the first reply.
+```
+
+The fix is to move the link out. `--split-link` prints the two blocks to hand to the user:
+
+```
+POST (link removed)
+I sent 400 cold DMs in 30 days and 2 became clients.
+
+What is the first line you send to a stranger?
+
+FIRST REPLY
+Full breakdown:
+https://example.com/dm-breakdown
+```
+
 A weak draft looks like this, and `postscore.py` exits non-zero on it:
 
 ```
@@ -72,8 +100,9 @@ BLOCKING: engagement bait; hashtag wall (more than 2)
 
 ## Rules that matter
 
-- **Link in the first reply, not the body.** Label it honestly: *observed, not
-  coded*. The open-sourced ranking parameters contain no link penalty. Reach loss
+- **Link in the first reply, never the root post.** On a free account a link in the
+  root post is a hard stop (score capped at 49, draft blocked). Label it honestly:
+  *observed, not coded*. The open-sourced ranking parameters contain no link penalty. Reach loss
   on link posts from non-Premium accounts was observed in March 2025 (Buffer,
   18.8M posts). It is a measurement from outside, not a coded rule.
 - **No bait.** "Like and repost if", "follow for more", "bookmark this" are ranking
@@ -89,7 +118,7 @@ BLOCKING: engagement bait; hashtag wall (more than 2)
 
 `postscore.py` is five local heuristics. It does not know how a post will do.
 Measured on a public tweet corpus, its score did not predict which tweets beat
-their account's median likes (AUC about 0.50). Treat the number as a lint
+their account's median likes (AUC 0.45 to 0.50). Treat the number as a lint
 result, never as a forecast, and say so if the user reads it as one. It never says a post is "undetectable"
 or "will go viral".
 
@@ -104,7 +133,7 @@ hashtag; the link is in a separate first-reply block. Tell the user the score wa
 ## Approval gate
 
 1. Show the finished text in one fenced block, ready to copy. If there is a link,
-   show it in a second block labelled "first reply".
+   show it in a second block titled FIRST REPLY.
 2. End the message with: Reply yes to log it.
 3. On "yes", append one line to `~/.claude/x/log.md` (or the handle's folder):
    date, skill, first line. That is all "yes" does.

@@ -19,13 +19,32 @@ def test_every_post_fits():
     assert len(r["posts"]) >= 4
 
 
-def test_links_move_to_last_post_only():
+def test_links_go_to_a_first_reply_block_not_the_thread():
     r = thread.build(draft())
     assert r["links_moved"] == 1
+    assert r["first_reply"] == "Full breakdown of the messages:\nhttps://example.com/dm-breakdown"
+    assert not any("https://" in p for p in r["posts"])
+    assert not any("Full breakdown" in p for p in r["posts"])
+
+
+def test_links_last_keeps_the_old_behaviour():
+    r = thread.build(draft(), links_last=True)
+    assert r["first_reply"] is None
     assert "https://example.com/dm-breakdown" in r["posts"][-1]
     assert not any("https://" in p for p in r["posts"][:-1])
-    assert "Full breakdown of the messages:" in r["posts"][-1]
     assert r["posts"][-1].count("Full breakdown of the messages:") == 1
+
+
+def test_no_link_means_no_first_reply():
+    assert thread.build("I did a thing.\n\nIt worked in 3 days.")["first_reply"] is None
+
+
+def test_cli_prints_first_reply_block():
+    run = lambda *a: subprocess.run([sys.executable, SCRIPT, fixture("thread_draft.txt")] + list(a), capture_output=True, text=True).stdout  # noqa: E731
+    assert ("FIRST REPLY (post it as a reply under post 1)\nFull breakdown of the messages:\n"
+            "https://example.com/dm-breakdown") in run()
+    out = run("--links-last")
+    assert "FIRST REPLY" not in out and "moved to the last post" in out
 
 
 def test_long_paragraph_splits_on_sentences():

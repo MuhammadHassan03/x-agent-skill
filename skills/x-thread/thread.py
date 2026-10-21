@@ -9,9 +9,11 @@ Rules it applies:
   * A blank line in the draft is a post boundary. A paragraph that is too long
     is split at sentence ends, and a sentence that is too long is split at
     word boundaries (and flagged).
-  * Links are pulled out of the body posts and gathered in the LAST post. On a
-    free account, link posts were observed to reach less (observed, not coded;
-    see references/x-algorithm.md), so links go last.
+  * Links are pulled out of every post and emitted as a separate FIRST REPLY
+    block, to be posted as a reply under post 1. On a free account, links in the
+    root post were observed to cost reach (observed, not coded; see
+    references/x-algorithm.md). With --links-last the old behaviour is kept and
+    the links go in the last post of the thread instead.
   * With --number, posts get an "i/N" prefix, counted in the budget.
   * The first post is checked as a hook (postscore.check_hook).
 
@@ -21,6 +23,7 @@ Usage
   python thread.py draft.txt
   python thread.py draft.txt --number
   python thread.py draft.txt --pack          merge short paragraphs into one post
+  python thread.py draft.txt --links-last    put links in the last post, no FIRST REPLY block
   python thread.py draft.txt --json
   python thread.py - < draft.txt
 
@@ -99,7 +102,7 @@ def split_long(text: str, budget: int, warnings: List[str]) -> List[str]:
     return out
 
 
-def build(text: str, number: bool = False, pack: bool = False) -> Dict[str, object]:
+def build(text: str, number: bool = False, pack: bool = False, links_last: bool = False) -> Dict[str, object]:
     text = text.replace("\r\n", "\n").replace("\r", "\n").strip()
     warnings: List[str] = []
     if not text:
@@ -143,11 +146,16 @@ def build(text: str, number: bool = False, pack: bool = False) -> Dict[str, obje
                 posts[-1] = posts[-1] + "\n\n" + piece
             else:
                 posts.append(piece)
-    if link_line:
+    first_reply = ""
+    if link_line and links_last:
         if posts and weighted(posts[-1] + "\n\n" + link_line) <= budget:
             posts[-1] = posts[-1] + "\n\n" + link_line
         else:
             posts.append(link_line)
+    elif link_line:
+        first_reply = link_line
+        if weighted(first_reply) > LIMIT:
+            warnings.append(f"the FIRST REPLY block is over {LIMIT}; use fewer links")
     if number and len(posts) > 1:
         n = len(posts)
         posts = [f"{i}/{n} {p}" for i, p in enumerate(posts, 1)]
@@ -168,7 +176,7 @@ def build(text: str, number: bool = False, pack: bool = False) -> Dict[str, obje
     if postscore.find_bait("\n".join(posts)):
         warnings.append("engagement bait found in the thread (also an Original Content Rewards ineligibility problem)")
     return {"posts": posts, "weighted": counts, "limit": LIMIT, "links_moved": len(links),
-            "warnings": warnings}
+            "first_reply": first_reply or None, "warnings": warnings}
 
 
 def read_input(path: str) -> str:
@@ -184,10 +192,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("input", help="draft file, or - for stdin")
     ap.add_argument("--number", action="store_true", help="prefix posts with i/N")
     ap.add_argument("--pack", action="store_true", help="merge short paragraphs into one post")
+    ap.add_argument("--links-last", action="store_true", help="put links in the last post instead of a FIRST REPLY block")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
     try:
-        res = build(read_input(args.input), number=args.number, pack=args.pack)
+        res = build(read_input(args.input), number=args.number, pack=args.pack, links_last=args.links_last)
     except (OSError, ValueError) as exc:
         print(f"thread: {exc}", file=sys.stderr)
         return 2
@@ -198,7 +207,11 @@ def main(argv: Optional[List[str]] = None) -> int:
             print(f"--- post {i}/{len(res['posts'])}  ({c}/{LIMIT})")  # type: ignore[arg-type]
             print(p)
         print("---")
-        if res["links_moved"]:
+        if res["first_reply"]:
+            print("FIRST REPLY (post it as a reply under post 1)")
+            print(res["first_reply"])
+            print("---")
+        elif res["links_moved"]:
             print(f"{res['links_moved']} link(s) moved to the last post.")
         for w in res["warnings"]:  # type: ignore[union-attr]
             print(f"WARNING: {w}")

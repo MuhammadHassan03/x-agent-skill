@@ -12,18 +12,19 @@ Five checks, each 0-100, combined into one score:
   REPLY PULL   does the post give a reader something concrete to answer or
                disagree with. Replies are the heaviest everyday signal in the
                ranking weights (references/x-algorithm.md).
-  LINK         a link in the body of a free-account post. Marked "observed, not
-               coded": no link penalty exists in the open-sourced ranking
-               parameters, but link posts from non-Premium accounts were
-               observed to get less reach (Buffer, March 2025). Default move:
-               put the link in the first reply.
+  LINK         HARD STOP on a free account: a link in the root post caps the score
+               at 49 and blocks the draft. Marked "observed, not coded": no link
+               penalty exists in the open-sourced ranking parameters, but link
+               posts from non-Premium accounts were observed to get less reach
+               (Buffer, March 2025). The move is always the same: put the link in
+               the first reply. `--split-link` prints the two blocks for you.
   BAIT         "like and repost if", "follow for more", "RT if", and friends.
                Bait is a ranking risk AND an Original Content Rewards
                ineligibility problem, so it is flagged twice.
 
 This is a set of local heuristics. It does not know how a post will perform.
 Measured on a public 2019-2022 tweet corpus it did NOT predict which tweets beat
-their own account's median likes (within-account AUC about 0.50). Use it as a
+their own account's median likes (within-account AUC 0.45 to 0.50). Use it as a
 lint for the problems it names (placeholders, bait, thread openers, links in
 the body, over-length), not as a forecast. See the README measurement section.
 
@@ -33,6 +34,7 @@ Usage
   python postscore.py --hooks hooks.txt        one candidate first line per line
   python postscore.py - < draft.txt
   python postscore.py draft.txt --premium      Premium account: link check relaxed
+  python postscore.py draft.txt --split-link   print POST and FIRST REPLY blocks (link moved out)
 
 Exit codes: 0 scored (no hard flag), 1 hard flag raised, 2 bad input.
 """
@@ -192,6 +194,47 @@ def check_reply_pull(text: str) -> Tuple[float, str, List[str]]:
     return clamp(score), ("question present" if q else "statement only"), notes
 
 
+LINK_CAP = 49.0
+LINK_MESSAGE = ("Link in root post. On free accounts, links in the root post were observed to cost reach "
+                "(observed, not coded). Put it in the first reply.")
+
+
+def split_link(text: str) -> Tuple[str, str]:
+    """Split a draft into (root post without links, FIRST REPLY text with the links).
+
+    A paragraph that ends in a colon once its link is removed ("Full breakdown:") becomes the
+    label of the first reply instead of a dangling line in the root post.
+    """
+    text = text.replace("\r\n", "\n").replace("\r", "\n").strip("\n")
+    paras = re.split(r"\n\s*\n", text)
+    root: List[str] = []
+    links: List[str] = []
+    label = ""
+    for p in paras:
+        spans = xcount._url_spans(p)
+        if not spans:
+            root.append(p)
+            continue
+        pieces, last = [], 0
+        for a, b in spans:
+            links.append(p[a:b])
+            pieces.append(p[last:a])
+            last = b
+        pieces.append(p[last:])
+        rest = re.sub(r"[ \t]{2,}", " ", "".join(pieces)).strip()
+        rest = re.sub(r"\s+([,.;:!?])", r"\1", rest)
+        if not re.sub(r"[\W_]+", "", rest):
+            continue
+        if rest.endswith(":") and not label:
+            label = rest
+            continue
+        root.append(rest)
+    reply = "\n".join(dict.fromkeys(links))
+    if label and reply:
+        reply = label + "\n" + reply
+    return "\n\n".join(r for r in root if r.strip()), reply
+
+
 def check_link(text: str, premium: bool) -> Tuple[float, str, List[str]]:
     notes: List[str] = []
     n = xcount.count(text)["urls"]
@@ -199,11 +242,8 @@ def check_link(text: str, premium: bool) -> Tuple[float, str, List[str]]:
         return 100.0, "no link in body", notes
     if premium:
         return 85.0, f"{n} link(s) in body (Premium: observed link suppression applies to non-Premium)", notes
-    notes.append("link in the body of a free-account post. Observed, not coded: "
-                 "no link penalty exists in the ranking parameters, but link posts from "
-                 "non-Premium accounts were observed to reach less (Buffer, 18.8M posts, March 2025). "
-                 "Move it to the first reply")
-    return 35.0, f"{n} link(s) in body", notes
+    notes.append(LINK_MESSAGE)
+    return 0.0, f"{n} link(s) in root post", notes
 
 
 def find_bait(text: str) -> List[str]:
@@ -246,6 +286,11 @@ def score(text: str, premium: bool = False) -> Dict[str, object]:
         hard.append(f"over the {cnt['limit']} limit by {cnt['over']}")
     if len(HASHTAG_RE.findall(text)) > 2:
         hard.append("hashtag wall (more than 2)")
+    capped: List[str] = []
+    if not premium and cnt["urls"]:
+        hard.insert(0, LINK_MESSAGE)
+        capped.append("link in root post")
+        total = min(total, LINK_CAP)
     verdict = "STRONG" if total >= 75 else "OK" if total >= 55 else "WEAK"
     if hard:
         verdict = "BLOCKED" if verdict != "WEAK" else "WEAK"
@@ -253,6 +298,7 @@ def score(text: str, premium: bool = False) -> Dict[str, object]:
         "score": round(total, 1),
         "verdict": verdict,
         "hard_flags": hard,
+        "capped_by": capped,
         "formula": formula_for(first_line(text)),
         "length": {"weighted": cnt["weighted"], "limit": cnt["limit"], "fits": cnt["fits"]},
         "checks": {k: {"score": round(v[0], 1), "detail": v[1], "notes": v[2]} for k, v in checks.items()},
@@ -288,6 +334,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("input", nargs="?", help="draft file, or - for stdin")
     ap.add_argument("--hooks", metavar="FILE", help="rank candidate first lines, one per line")
     ap.add_argument("--premium", action="store_true", help="account is Premium")
+    ap.add_argument("--split-link", action="store_true", help="print the post without its link, then the FIRST REPLY block")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
     try:
@@ -314,6 +361,19 @@ def main(argv: Optional[List[str]] = None) -> int:
     except (OSError, ValueError) as exc:
         print(f"postscore: {exc}", file=sys.stderr)
         return 2
+    if args.split_link:
+        root, reply = split_link(text)
+        if args.json:
+            print(json.dumps({"post": root, "first_reply": reply or None}, indent=2, ensure_ascii=False))
+        else:
+            print("POST" + (" (link removed)" if reply else ""))
+            print(root if root else "(nothing left: the draft was only a link, write the post first)")
+            if reply:
+                print("\nFIRST REPLY")
+                print(reply)
+            else:
+                print("\nNo link in the draft, so no FIRST REPLY block.")
+        return 0 if root else 1
     res = score(text, premium=args.premium)
     if args.json:
         print(json.dumps(res, indent=2, ensure_ascii=False))
@@ -323,6 +383,8 @@ def main(argv: Optional[List[str]] = None) -> int:
               f"   ({L['weighted']}/{L['limit']} weighted)")  # type: ignore[index]
         if res["formula"]:
             print(f"hook formula: {res['formula']}")
+        if res["capped_by"]:
+            print(f"score capped at {LINK_CAP:.0f}: {', '.join(res['capped_by'])}")  # type: ignore[arg-type]
         print("-" * 64)
         for name, c in res["checks"].items():  # type: ignore[union-attr]
             print(f"  {name:<12} {bar(c['score'])} {c['score']:5.1f}  {c['detail']}")

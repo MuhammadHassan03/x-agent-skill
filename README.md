@@ -106,13 +106,16 @@ config and handles emoji sequences.
   remaining 204, urls 1 (each 23), weight-2 characters 0
 ```
 
-**Scoring a post.** Five checks: hook, specificity, reply pull, link, bait.
+**Scoring a post.** Five checks: hook, specificity, reply pull, link, bait. A link in the root post of a
+free-account draft is a hard stop: the score is capped at 49 and the draft is blocked, with the fix
+(`--split-link` prints the POST and FIRST REPLY blocks).
 
 ```
-POST SCORE  37.1  WEAK   (161/280 weighted)
-  LINK         #######.............  35.0  1 link(s) in body
+POST SCORE  31.8  WEAK   (161/280 weighted)
+score capped at 49: link in root post
+  LINK         ....................   0.0  1 link(s) in root post
   BAIT         ....................   0.0  like/repost solicitation, "RT/like if" bait, "follow for more"
-BLOCKING: engagement bait; hashtag wall (more than 2)
+BLOCKING: Link in root post. On free accounts, links in the root post were observed to cost reach (observed, not coded). Put it in the first reply.; engagement bait; hashtag wall (more than 2)
 ```
 
 Anything that needs a number you did not give is written `{{your number}}`, and
@@ -165,7 +168,7 @@ over 1,402 accounts with 95% bootstrap intervals:
 | predictor | AUC |
 | --- | --- |
 | hook score | 0.500 (0.494 to 0.506) |
-| full `postscore.py` total | 0.475 (0.469 to 0.482) |
+| full `postscore.py` total | 0.449 (0.442 to 0.456) |
 | baseline: tweet length alone | 0.592 (0.584 to 0.600) |
 | baseline: number in first line | 0.527 (0.521 to 0.532) |
 
@@ -174,6 +177,10 @@ beats it. I did not tune it on this data afterwards, because that would just fit
 test set. So `postscore.py` is a lint for the problems it names (unfilled
 placeholders, bait, thread openers, links in the body, being over length), not a
 prediction, and the SKILL.md says so.
+
+The full-score row was 0.475 before the link hard stop and is 0.449 after it. In this corpus posts
+with links got *more* likes, so capping them points the wrong way here. The hard stop is a policy
+choice resting on the 2025 outside observation, not something this corpus supports.
 
 **Rule effects, within account** (mean difference in log2 of the multiple; positive means
 more likes than that account's norm):

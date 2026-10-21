@@ -67,7 +67,7 @@ On Windows, where this says `python3`, use `python`.
 ## Approval gate
 
 1. Show the finished text in one fenced block, ready to copy. If there is a link,
-   show it in a second block labelled "first reply".
+   show it in a second block titled FIRST REPLY.
 2. End the message with: Reply yes to log it.
 3. On "yes", append one line to `~/.claude/x/log.md` (or the handle's folder):
    date, skill, first line. That is all "yes" does.
