@@ -126,7 +126,7 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
 <section class="section" id="skills" aria-labelledby="skills-title">
   <div class="wrap">
     <header class="sec-head reveal">
-      <p class="eyebrow"><span class="num">01</span> The twelve</p>
+      <p class="eyebrow">The twelve</p>
       <h2 id="skills-title">One command each.</h2>
       <p class="sec-sub">Every skill ends the same way: your text in one copy-ready block, then "Reply yes to log it". A yes appends one line to a file on your disk. It never posts.</p>
     </header>
@@ -141,18 +141,18 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
     <p class="sr-only" id="filter-status" role="status" aria-live="polite"></p>
 
     <ul class="skill-grid" id="skill-grid">
-      <li data-cat="write" class="reveal"><details><summary><code>/x-post</code><span>One idea into a post: three hooks from 19 formulas, linted, one humanized draft.</span></summary><p>Tools: <code>postscore.py</code>, <code>xcount.py</code>. A link in the root post is a hard stop on a free account (score capped, draft blocked): it goes in a FIRST REPLY block, labelled observed, not coded. Anything missing a number becomes <code>{{your number}}</code> and the scorer blocks it.</p></details></li>
-      <li data-cat="write" class="reveal"><details><summary><code>/x-thread</code><span>A long draft into a thread of 280-weighted-character posts, links moved to a FIRST REPLY block.</span></summary><p>Tool: <code>thread.py</code>. Splits at paragraph, then sentence, then word. Warns when a removed link leaves a dangling sentence.</p></details></li>
-      <li data-cat="write" class="reveal"><details><summary><code>/x-reply</code><span>Replies under bigger accounts, checked against an approximation of the 0 to 3 reply rubric.</span></summary><p>Tool: <code>replylint.py</code>. Refuses compliment-only openers and stacked self-replies. The real rubric prompt is not published; the bands are an approximation.</p></details></li>
-      <li data-cat="write" class="reveal"><details><summary><code>/x-article</code><span>Long-form outline, draft, first-screen hook and an originality checklist.</span></summary><p>Premium feature, documented but not tested by the author. Free accounts get pointed to <code>/x-thread</code>.</p></details></li>
-      <li data-cat="write" class="reveal"><details><summary><code>/x-dm</code><span>One first message and two follow-ups for one specific person. Then stop.</span></summary><p>One at a time, written for that person, sent by hand. No batches, no merge fields. Drafting only.</p></details></li>
-      <li data-cat="improve" class="reveal"><details><summary><code>/x-human</code><span>Strips invisible Unicode, dashes and stock phrases, then scores five checks.</span></summary><p>Tools: <code>humanize.py</code>, <code>detect.py</code>. Local heuristics, not a third-party detector. It never says a text is undetectable.</p></details></li>
-      <li data-cat="improve" class="reveal"><details><summary><code>/x-profile</code><span>Bio, pinned post, banner and link, scored on a 100-point rubric.</span></summary><p>Data: <code>rubric.json</code>, eleven items. The skill never opens or edits your profile.</p></details></li>
-      <li data-cat="research" class="reveal"><details><summary><code>/x-viral</code><span>Ranks posts you noted down by hand by multiple over each account's own median.</span></summary><p>Tool: <code>swipe.py</code>. Never opens X, never drives a browser. You paste, it ranks.</p></details></li>
-      <li data-cat="research" class="reveal"><details><summary><code>/x-audit</code><span>Reads your own analytics CSV and ranks your posts by outlier multiple.</span></summary><p>Tool: <code>xanalytics.py</code>. Headers matched flexibly because X does not document the export. Needs 3 or more posts.</p></details></li>
-      <li data-cat="research" class="reveal"><details><summary><code>/x-algo</code><span>Regenerates the pinned ranking-weights reference from a <code>param.rs</code> you paste.</span></summary><p>Tool: <code>weights.py</code>. Refuses to run without a commit hash. It never fetches anything.</p></details></li>
-      <li data-cat="plan" class="reveal"><details><summary><code>/x-plan</code><span>Your week: what to post, which format, when, and which accounts to reply to.</span></summary><p>Reply-first plan for a small free account. Times are marked as guesses until your own data says otherwise.</p></details></li>
-      <li data-cat="plan" class="reveal"><details><summary><code>/x-money</code><span>Original Content Rewards eligibility tracker and ineligible-content linter.</span></summary><p>Tool: <code>ocr.py</code>. X publishes no per-impression rate, so it refuses to estimate earnings unless you supply your own. Premium program, not tested by the author.</p></details></li>
+      <li data-cat="write"><details><summary><code>/x-post</code><span>One idea into a post: three hooks from 19 formulas, linted, one humanized draft.</span></summary><p>Tools: <code>postscore.py</code>, <code>xcount.py</code>. A link in the root post is a hard stop on a free account (score capped, draft blocked): it goes in a FIRST REPLY block, labelled observed, not coded. Anything missing a number becomes <code>{{your number}}</code> and the scorer blocks it.</p></details></li>
+      <li data-cat="write"><details><summary><code>/x-thread</code><span>A long draft into a thread of 280-weighted-character posts, links moved to a FIRST REPLY block.</span></summary><p>Tool: <code>thread.py</code>. Splits at paragraph, then sentence, then word. Warns when a removed link leaves a dangling sentence.</p></details></li>
+      <li data-cat="write"><details><summary><code>/x-reply</code><span>Replies under bigger accounts, checked against an approximation of the 0 to 3 reply rubric.</span></summary><p>Tool: <code>replylint.py</code>. Refuses compliment-only openers and stacked self-replies. The real rubric prompt is not published; the bands are an approximation.</p></details></li>
+      <li data-cat="write"><details><summary><code>/x-article</code><span>Long-form outline, draft, first-screen hook and an originality checklist.</span></summary><p>Premium feature, documented but not tested by the author. Free accounts get pointed to <code>/x-thread</code>.</p></details></li>
+      <li data-cat="write"><details><summary><code>/x-dm</code><span>One first message and two follow-ups for one specific person. Then stop.</span></summary><p>One at a time, written for that person, sent by hand. No batches, no merge fields. Drafting only.</p></details></li>
+      <li data-cat="improve"><details><summary><code>/x-human</code><span>Strips invisible Unicode, dashes and stock phrases, then scores five checks.</span></summary><p>Tools: <code>humanize.py</code>, <code>detect.py</code>. Local heuristics, not a third-party detector. It never says a text is undetectable.</p></details></li>
+      <li data-cat="improve"><details><summary><code>/x-profile</code><span>Bio, pinned post, banner and link, scored on a 100-point rubric.</span></summary><p>Data: <code>rubric.json</code>, eleven items. The skill never opens or edits your profile.</p></details></li>
+      <li data-cat="research"><details><summary><code>/x-viral</code><span>Ranks posts you noted down by hand by multiple over each account's own median.</span></summary><p>Tool: <code>swipe.py</code>. Never opens X, never drives a browser. You paste, it ranks.</p></details></li>
+      <li data-cat="research"><details><summary><code>/x-audit</code><span>Reads your own analytics CSV and ranks your posts by outlier multiple.</span></summary><p>Tool: <code>xanalytics.py</code>. Headers matched flexibly because X does not document the export. Needs 3 or more posts.</p></details></li>
+      <li data-cat="research"><details><summary><code>/x-algo</code><span>Regenerates the pinned ranking-weights reference from a <code>param.rs</code> you paste.</span></summary><p>Tool: <code>weights.py</code>. Refuses to run without a commit hash. It never fetches anything.</p></details></li>
+      <li data-cat="plan"><details><summary><code>/x-plan</code><span>Your week: what to post, which format, when, and which accounts to reply to.</span></summary><p>Reply-first plan for a small free account. Times are marked as guesses until your own data says otherwise.</p></details></li>
+      <li data-cat="plan"><details><summary><code>/x-money</code><span>Original Content Rewards eligibility tracker and ineligible-content linter.</span></summary><p>Tool: <code>ocr.py</code>. X publishes no per-impression rate, so it refuses to estimate earnings unless you supply your own. Premium program, not tested by the author.</p></details></li>
     </ul>
   </div>
 </section>
@@ -177,7 +177,7 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
 <section class="section" id="how" aria-labelledby="how-title">
   <div class="wrap">
     <header class="sec-head reveal">
-      <p class="eyebrow"><span class="num">02</span> How it works</p>
+      <p class="eyebrow">How it works</p>
       <h2 id="how-title">Idea in, your own edit out.</h2>
       <p class="sec-sub">The human stays in the loop for every step that touches X.</p>
     </header>
@@ -194,7 +194,7 @@ REPLY BAND 0/3  SPAM-LIKE   (12 weighted)
 <section class="section alt" id="tools" aria-labelledby="tools-title">
   <div class="wrap">
     <header class="sec-head reveal">
-      <p class="eyebrow"><span class="num">03</span> The tools</p>
+      <p class="eyebrow">The tools</p>
       <h2 id="tools-title">Ten tools that actually run.</h2>
       <p class="sec-sub">Python 3.9+, standard library only, no network, UTF-8, CRLF tolerant, exit non-zero on bad input. Pick one to see its real output.</p>
     </header>
@@ -291,7 +291,7 @@ back scales with 5 + 15 = 20.</code></pre></div>
 <section class="section" id="measured" aria-labelledby="measured-title">
   <div class="wrap">
     <header class="sec-head reveal">
-      <p class="eyebrow"><span class="num">04</span> What I actually measured</p>
+      <p class="eyebrow">What I actually measured</p>
       <h2 id="measured-title">The scorer does not predict likes.</h2>
       <p class="sec-sub">Tested within each account on 3 of 41 shards of a public tweet corpus: 6.4M tweet rows from 2019-01-01 to 2022-12-31, 1,500 accounts, 270,880 tweets scored. A hit is 3x or more that account's median likes (37,861); a miss is under 1x (131,549). Aggregates only; no tweet text is in the repo.</p>
     </header>
@@ -355,7 +355,7 @@ back scales with 5 + 15 = 20.</code></pre></div>
 <section class="section alt" id="fine-print" aria-labelledby="fine-title">
   <div class="wrap narrow">
     <header class="sec-head reveal">
-      <p class="eyebrow"><span class="num">05</span> The fine print</p>
+      <p class="eyebrow">The fine print</p>
       <h2 id="fine-title">What it will not claim.</h2>
     </header>
     <div class="acc reveal">
@@ -376,7 +376,7 @@ back scales with 5 + 15 = 20.</code></pre></div>
 <section class="section" id="install" aria-labelledby="install-title">
   <div class="wrap">
     <header class="sec-head reveal">
-      <p class="eyebrow"><span class="num">06</span> Install</p>
+      <p class="eyebrow">Install</p>
       <h2 id="install-title">Three ways in.</h2>
       <p class="sec-sub">You need Python 3.9 or newer for the tools; nothing to <code>pip install</code>. After installing, copy <code>templates/voice.md</code> to <code>~/.claude/x/voice.md</code> and fill it in, or give Claude three of your own posts and ask it to write your voice file.</p>
     </header>
@@ -417,7 +417,7 @@ Copy-Item -Recurse x-agent-skill\skills\x-* "$HOME\.claude\skills\"</code></pre>
 <section class="section alt" id="dogfood" aria-labelledby="dogfood-title">
   <div class="wrap narrow">
     <header class="sec-head reveal">
-      <p class="eyebrow"><span class="num">07</span> 30-day dogfood</p>
+      <p class="eyebrow">30-day dogfood</p>
       <h2 id="dogfood-title">In progress. Numbers land <span class="nowrap">2026-11-19.</span></h2>
     </header>
     <div class="dog reveal">
