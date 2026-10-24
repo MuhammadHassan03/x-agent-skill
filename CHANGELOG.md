@@ -5,6 +5,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+- Every tool now reads a UTF-16 file with a BOM, which is what Windows PowerShell 5.1 writes for `>`
+  and `Out-File`. Before, it stopped with a utf-8 codec error.
+
+### Changed
+- README install: Python prerequisite, PowerShell and ZIP routes, plugin command names
+  (`/x-agent:x-post`), the Windows `python3` Store-shortcut failure, and a 60-second first run.
+
 ## [0.1.0] - 2026-10-21
 
 ### Added

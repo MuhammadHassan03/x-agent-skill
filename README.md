@@ -36,7 +36,7 @@ This pack is built around three things:
 2. **Measured, and the scorer failed.** The post scorer and the outlier ranker were
    tested on a public corpus. The scorer does not predict likes (AUC 0.50). The full
    result is below.
-3. **Tools that run.** Ten dependency-free tools, 142 tests, CI on Python 3.9, 3.11
+3. **Tools that run.** Ten dependency-free tools, a test suite that runs on every push, CI on Python 3.9, 3.11
    and 3.13 on Linux and Windows. A repo test fails the build on any em dash, any
    network or browser import in a tool, and any skill that lacks the approval gate.
 
@@ -47,33 +47,66 @@ by the author**.
 
 ## Install
 
-As a plugin:
+You need Python 3.9 or newer on your PATH for the tools (nothing to `pip install`). Check with
+`python --version` (Windows) or `python3 --version` (macOS, Linux).
+
+As a plugin, inside Claude Code:
 
 ```
 /plugin marketplace add MuhammadHassan03/x-agent-skill
 /plugin install x-agent@x-agent-skill
 ```
 
-Or by hand:
+Plugin skills are namespaced, so the commands are `/x-agent:x-post`, `/x-agent:x-thread` and so on.
+Wherever this page says `/x-post`, that is what you type. Ask Claude "use the x-post skill" and it
+finds the same skill.
+
+Or by hand. macOS and Linux:
 
 ```bash
 git clone https://github.com/MuhammadHassan03/x-agent-skill.git
+mkdir -p ~/.claude/skills
 cp -r x-agent-skill/skills/x-* ~/.claude/skills/
+```
+
+Windows, PowerShell (`cp -r` does not work there, and no git? download the ZIP from the green
+Code button and unzip it instead):
+
+```powershell
+git clone https://github.com/MuhammadHassan03/x-agent-skill.git
+New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
+Copy-Item -Recurse x-agent-skill\skills\x-* "$HOME\.claude\skills\"
 ```
 
 Or with no Claude Code at all: paste one `SKILL.md` at the top of a chat and it runs as a
 mode. You lose the Python tools, which is most of the point of `/x-post`, `/x-reply` and
 `/x-human`, but the writing rules still apply.
 
-On Windows, where a skill says `python3`, use `python`. The `references/` and `templates/` folders stay
-in the clone; open them there.
+On Windows, where a skill says `python3`, use `python`. A stock Windows install answers `python3`
+with "Python was not found; run without arguments to install from the Microsoft Store" and exits
+non-zero; that is the Store shortcut, not a broken install. If `python` is missing too, try `py`.
+Keep the `skills/` folders side by side: `x-thread`, `x-reply`, `x-viral` and `x-article` import or
+read files from `x-post`. The `references/` and `templates/` folders are not copied by the by-hand
+install, so open them in the clone (the skills tell Claude what is in them where it matters).
 
-Keep the `skills/` folders side by side: `x-thread`, `x-reply`, `x-viral` and
-`x-article` import or read files from `x-post`.
+Then copy `templates/voice.md` to `~/.claude/x/voice.md` (`$HOME\.claude\x\voice.md` on Windows,
+create the folder first) and fill it in, or send Claude three of your own posts and say "write my
+voice.md from these". For several accounts see `templates/accounts.md`.
 
-Then copy `templates/voice.md` to `~/.claude/x/voice.md` and fill it in, or send
-Claude three of your own posts and say "write my voice.md from these". For
-several accounts see `templates/accounts.md`.
+### First run, 60 seconds, no Claude needed
+
+From the clone, run the scorer on the sample drafts. This proves Python and the tools work before
+you involve any skill:
+
+```bash
+cd x-agent-skill
+python3 skills/x-post/postscore.py demo/samples/good.txt    # Windows: python
+python3 skills/x-post/postscore.py demo/samples/bait.txt    # the same tool blocking a bad draft
+```
+
+`good.txt` scores 93.8 and passes; `bait.txt` is blocked for engagement bait and exits non-zero. Your
+own text works the same way: save it to a file (any encoding PowerShell writes is fine) or pipe it
+in with `-` as the file name. Then open Claude Code in any folder and say "write a post about ...".
 
 ## The twelve
 

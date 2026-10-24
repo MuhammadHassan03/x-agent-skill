@@ -224,7 +224,8 @@ def render(res: Dict[str, Any], notes: List[str], mapping: Dict[str, str]) -> st
 
 def read_input(path: str) -> str:
     data = sys.stdin.buffer.read() if path == "-" else open(path, "rb").read()
-    return data.decode("utf-8-sig")
+    # Windows PowerShell 5.1 writes UTF-16 for `>`; a BOM says so.
+    return data.decode("utf-16" if data[:2] in (b"\xff\xfe", b"\xfe\xff") else "utf-8-sig")
 
 
 def main(argv: Optional[List[str]] = None) -> int:

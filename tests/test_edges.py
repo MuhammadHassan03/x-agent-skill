@@ -146,3 +146,19 @@ def test_validation_script_auc_matches_a_hand_computed_value():
     # pairs of (pos, neg): 3 beats 1 and 2 and ties 3; 4 and 5 beat all three -> 8.5 / 9
     assert abs(mod.auc(np.array([3.0, 4.0, 5.0]), np.array([1.0, 2.0, 3.0])) - 8.5 / 9) < 1e-9
     assert mod.auc(np.array([]), np.array([1.0])) is None
+
+
+# ---- Windows PowerShell 5.1 writes UTF-16 for `>` and Out-File; every tool must read it
+UTF16_TOOLS = [
+    ("skills/x-post/xcount.py", []), ("skills/x-post/postscore.py", []), ("skills/x-thread/thread.py", []),
+    ("skills/x-human/humanize.py", []), ("skills/x-human/detect.py", []),
+]
+
+
+@pytest.mark.parametrize("script,extra", UTF16_TOOLS)
+def test_tools_read_a_utf16_file_with_a_bom(tmp_path, script, extra):
+    p = tmp_path / "d.txt"
+    p.write_bytes(b"\xff\xfe" + "I shipped 3 apps in 30 days. What broke first?".encode("utf-16-le"))
+    r = run(script, str(p), *extra)
+    assert "codec" not in r.stderr and r.returncode in (0, 1), (script, r.stderr)
+    assert r.stdout.strip()

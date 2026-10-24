@@ -186,7 +186,8 @@ def build(text: str, number: bool = False, pack: bool = False, links_last: bool 
 
 def read_input(path: str) -> str:
     data = sys.stdin.buffer.read() if path == "-" else open(path, "rb").read()
-    return data.decode("utf-8-sig")
+    # Windows PowerShell 5.1 writes UTF-16 for `>`; a BOM says so.
+    return data.decode("utf-16" if data[:2] in (b"\xff\xfe", b"\xfe\xff") else "utf-8-sig")
 
 
 def main(argv: Optional[List[str]] = None) -> int:

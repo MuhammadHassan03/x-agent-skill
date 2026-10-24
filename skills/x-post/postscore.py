@@ -328,7 +328,8 @@ def score_hook_line(line: str) -> Dict[str, object]:
 
 def read_input(path: str) -> str:
     data = sys.stdin.buffer.read() if path == "-" else open(path, "rb").read()
-    return data.decode("utf-8-sig")
+    # Windows PowerShell 5.1 writes UTF-16 for `>`; a BOM says so.
+    return data.decode("utf-16" if data[:2] in (b"\xff\xfe", b"\xfe\xff") else "utf-8-sig")
 
 
 def bar(v: float, width: int = 20) -> str:

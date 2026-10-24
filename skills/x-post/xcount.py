@@ -152,7 +152,8 @@ def read_input(path: str) -> str:
     else:
         with open(path, "rb") as fh:
             data = fh.read()
-    return data.decode("utf-8-sig")
+    # Windows PowerShell 5.1 writes UTF-16 for `>`; a BOM says so.
+    return data.decode("utf-16" if data[:2] in (b"\xff\xfe", b"\xfe\xff") else "utf-8-sig")
 
 
 def main(argv: Optional[List[str]] = None) -> int:

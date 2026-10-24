@@ -20,13 +20,19 @@ python3 postscore.py --hooks hooks.txt      # rank three candidate first lines
 python3 postscore.py draft.txt --split-link  # POST and FIRST REPLY blocks, link moved out
 ```
 
-On Windows, where this says `python3`, use `python`.
+On Windows, where this says `python3`, use `python` (`python3` there is usually the Microsoft Store
+shortcut and fails with "Python was not found"; try `py` if `python` is also missing).
 
 ## Before you write
 
 1. Read `~/.claude/x/voice.md` (or `~/.claude/x/<handle>/voice.md`). If it does
    not exist, ask for three of the user's own posts, infer the voice, and write
-   the file from `templates/voice.md`.
+   the file from `templates/voice.md`. If that template is not on disk (a by-hand
+   install copies only `skills/`), write the file with these headings: Who I am on
+   X (handle, what I do, who I write for, free or Premium, where the money comes
+   from), How I sound (sentence length, contractions, slang, capitalisation),
+   Things I never say, Proof I can use (only facts the user gave), Off-platform
+   path (the one link), Never (invent a number, ask for likes).
 2. Default persona: a small account on the free tier, earning off-platform
    through clients, a product or a newsletter. 280 weighted characters. Do not
    assume Premium. Premium features are documented in `references/x-rules.md`,
