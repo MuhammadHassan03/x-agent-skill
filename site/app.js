@@ -114,9 +114,9 @@
         copyStatus.textContent = ok ? "Copied to clipboard" : "Copy failed, select the text and copy it";
         setTimeout(function () { btn.textContent = "Copy"; }, 1800);
       }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
-      } else {
+      // The async API can exist and still reject (embedded browsers, iframes, privacy settings),
+      // so a rejection tries the textarea route before giving up.
+      function legacyCopy() {
         try {
           var ta = document.createElement("textarea");
           ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
@@ -124,6 +124,11 @@
           var ok = document.execCommand("copy");
           document.body.removeChild(ta); done(ok);
         } catch (e) { done(false); }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { done(true); }, legacyCopy);
+      } else {
+        legacyCopy();
       }
     });
   });

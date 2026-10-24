@@ -378,7 +378,7 @@ back scales with 5 + 15 = 20.</code></pre></div>
     <header class="sec-head reveal">
       <p class="eyebrow"><span class="num">06</span> Install</p>
       <h2 id="install-title">Three ways in.</h2>
-      <p class="sec-sub">Then copy <code>templates/voice.md</code> to <code>~/.claude/x/voice.md</code> and fill it in, or give Claude three of your own posts and ask it to write your voice file.</p>
+      <p class="sec-sub">You need Python 3.9 or newer for the tools; nothing to <code>pip install</code>. After installing, copy <code>templates/voice.md</code> to <code>~/.claude/x/voice.md</code> and fill it in, or give Claude three of your own posts and ask it to write your voice file.</p>
     </header>
     <div class="install reveal">
       <div class="seg seg-wide" role="tablist" aria-label="Install method" id="install-tabs">
@@ -390,18 +390,25 @@ back scales with 5 + 15 = 20.</code></pre></div>
         <p>In Claude Code:</p>
         <div class="code-wrap"><pre tabindex="0"><code id="code-1">/plugin marketplace add MuhammadHassan03/x-agent-skill
 /plugin install x-agent@x-agent-skill</code></pre><button class="copy" type="button" data-target="code-1">Copy</button></div>
+        <p>Plugin skills are namespaced, so the commands are <code>/x-agent:x-post</code>, <code>/x-agent:x-thread</code> and so on.</p>
       </div>
       <div role="tabpanel" id="ip-2" aria-labelledby="it-2" hidden>
         <p>Keep the <code>x-*</code> skill folders side by side: several import from <code>x-post</code>. The <code>references/</code> and <code>templates/</code> folders stay in the clone.</p>
+        <p>macOS and Linux:</p>
         <div class="code-wrap"><pre tabindex="0"><code id="code-2">git clone https://github.com/MuhammadHassan03/x-agent-skill.git
+mkdir -p ~/.claude/skills
 cp -r x-agent-skill/skills/x-* ~/.claude/skills/</code></pre><button class="copy" type="button" data-target="code-2">Copy</button></div>
+        <p>Windows, PowerShell (<code>cp -r</code> does not work there):</p>
+        <div class="code-wrap"><pre tabindex="0"><code id="code-4">git clone https://github.com/MuhammadHassan03/x-agent-skill.git
+New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
+Copy-Item -Recurse x-agent-skill\skills\x-* "$HOME\.claude\skills\"</code></pre><button class="copy" type="button" data-target="code-4">Copy</button></div>
       </div>
       <div role="tabpanel" id="ip-3" aria-labelledby="it-3" hidden>
         <p>No Claude Code at all: paste one <code>SKILL.md</code> at the top of a chat and it runs as a mode. You lose the Python tools, which is most of the point of <code>/x-post</code>, <code>/x-reply</code> and <code>/x-human</code>, but the writing rules still apply.</p>
         <div class="code-wrap"><pre tabindex="0"><code id="code-3">https://github.com/MuhammadHassan03/x-agent-skill/tree/master/skills</code></pre><button class="copy" type="button" data-target="code-3">Copy</button></div>
       </div>
       <p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
-      <p class="micro">Commands in the skills are written for <code>python</code> or <code>python3</code>, whichever your system calls Python 3.</p>
+      <p class="micro">Skills say <code>python3</code>. On Windows use <code>python</code> (or <code>py</code>): <code>python3</code> there is usually the Microsoft Store shortcut and fails with "Python was not found".</p>
     </div>
   </div>
 </section>

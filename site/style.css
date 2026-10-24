@@ -244,7 +244,8 @@ pre code { background: none; border: 0; padding: 0; font-size: inherit; }
 .footer { border-top: 1px solid var(--line); padding: 32px 0 44px; color: var(--muted); font-size: .92rem; }
 .foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .foot p { margin: 0; }
-.foot ul { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+.foot ul { display: flex; gap: 8px 20px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+.foot ul a { display: inline-block; padding: 4px 0; min-height: 24px; }
 
 /* reveal on scroll: content is visible without JS */
 .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
@@ -281,7 +282,7 @@ pre code { background: none; border: 0; padding: 0; font-size: inherit; }
   .term-bar .seg { margin-left: 0; }
   .measure, .dog { padding: 20px; }
   .tbl th, .tbl td { padding: 10px 8px; font-size: .88rem; }
-  .code-wrap pre { padding-right: 20px; padding-bottom: 60px; }
+  .code-wrap pre { padding-right: 20px; padding-bottom: 60px; white-space: pre-wrap; overflow-wrap: anywhere; }
   .copy { top: auto; bottom: 10px; }
 }
 

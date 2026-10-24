@@ -162,6 +162,20 @@ def test_site_is_static_small_and_self_contained():
     assert not re.search(r"fetch\(|XMLHttpRequest|sendBeacon|WebSocket", read(os.path.join(site, "app.js")))
 
 
+def test_site_copy_button_falls_back_when_the_clipboard_api_rejects():
+    js = read(os.path.join(ROOT, "site", "app.js"))
+    # the rejection handler must be the textarea fallback, not a bare "failed"
+    assert re.search(r"writeText\(text\)\.then\(function \(\) \{ done\(true\); \}, legacyCopy\)", js)
+    assert "execCommand" in js
+
+
+def test_site_install_matches_the_readme_install_facts():
+    html, readme = read(os.path.join(ROOT, "site", "index.html")), read(os.path.join(ROOT, "README.md"))
+    for needle in ("Python 3.9", "Copy-Item", "mkdir -p ~/.claude/skills", "/x-agent:x-post", "Microsoft Store"):
+        assert needle in html, ("site", needle)
+        assert needle in readme, ("README", needle)
+
+
 def test_site_has_no_invented_proof():
     html = read(os.path.join(ROOT, "site", "index.html")).lower()
     for word in ("testimonial", "stars", "customers", "trusted by", "users love"):
