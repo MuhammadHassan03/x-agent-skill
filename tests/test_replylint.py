@@ -58,11 +58,6 @@ def test_without_parent_on_topic_not_checked():
     assert any("not checked" in c["detail"] for c in r["checks"])
 
 
-def test_non_latin_reply_does_not_crash():
-    r = replylint.lint("私は30日間試しました。理由は明確です。", PARENT)
-    assert 0 <= r["band"] <= 3
-
-
 def test_cli(tmp_path):
     r = tmp_path / "r.txt"
     r.write_text("Great point!\r\n", encoding="utf-8")

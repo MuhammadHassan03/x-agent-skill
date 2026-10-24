@@ -4,6 +4,8 @@ import ast
 import json
 import os
 import re
+import subprocess
+import sys
 
 import pytest
 
@@ -102,10 +104,25 @@ def test_every_tool_named_in_a_skill_exists():
             assert os.path.exists(os.path.normpath(os.path.join(SKILLS, name, rel))), (name, rel)
 
 
-def test_every_tool_has_help_and_json_flags():
-    for p in text_files():
-        if p.endswith(".py") and os.sep + "skills" + os.sep in p and "import argparse" in read(p):
-            assert "--json" in read(p) or p.endswith(("ocr.py",)), p
+TOOL_HELP = [
+    ("skills/x-post/xcount.py", []), ("skills/x-post/postscore.py", []), ("skills/x-thread/thread.py", []),
+    ("skills/x-reply/replylint.py", []), ("skills/x-viral/swipe.py", []), ("skills/x-audit/xanalytics.py", []),
+    ("skills/x-human/humanize.py", []), ("skills/x-human/detect.py", []), ("skills/x-money/ocr.py", ["status"]),
+    ("skills/x-money/ocr.py", ["lint"]), ("tools/algo_watch.py", []), ("measurement/dogfood/report.py", []),
+]
+
+
+@pytest.mark.parametrize("script,sub", TOOL_HELP)
+def test_every_tool_answers_help_and_offers_json(script, sub):
+    r = subprocess.run([sys.executable, os.path.join(ROOT, script)] + sub + ["--help"], capture_output=True, text=True, encoding="utf-8")
+    assert r.returncode == 0 and "usage:" in r.stdout.lower(), script
+    if script != "skills/x-algo/weights.py":
+        assert "--json" in r.stdout, script
+
+
+def test_weights_tool_help():
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "skills/x-algo/weights.py"), "--help"], capture_output=True, text=True, encoding="utf-8")
+    assert r.returncode == 0 and "--commit" in r.stdout and "--json" in r.stdout
 
 
 def test_manifest_and_data_files():
@@ -115,7 +132,10 @@ def test_manifest_and_data_files():
     assert sum(i["points"] for i in rubric["items"]) == rubric["total"] == 100
     hooks = json.loads(read(os.path.join(SKILLS, "x-post", "hooks.json")))
     ids = [h["id"] for h in hooks["hooks"]]
-    assert len(ids) == len(set(ids)) == 19
+    assert len(ids) == len(set(ids))
+    for doc in ("README.md", os.path.join("site", "index.html")):
+        claimed = {int(n) for n in re.findall(r"(\d+) formulas", read(os.path.join(ROOT, doc)))}
+        assert claimed == {len(ids)}, (doc, claimed, len(ids))
     for h in hooks["hooks"]:
         re.compile(h["match"])
         assert set(h) >= {"name", "template", "example", "best_for", "trap"}
@@ -128,7 +148,7 @@ def test_license_is_mit_with_owner():
 def test_every_reference_has_a_last_checked_line():
     for f in ("x-algorithm.md", "x-rules.md", "stale.md"):
         t = read(os.path.join(ROOT, "references", f))
-        assert re.search(r"(?i)last checked: 2026-\d\d-\d\d|\| 2026-\d\d-\d\d \|", t), f
+        assert re.search(r"(?i)last checked: \d{4}-\d\d-\d\d|\| \d{4}-\d\d-\d\d \|", t), f
 
 
 def test_site_is_static_small_and_self_contained():

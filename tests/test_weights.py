@@ -71,5 +71,9 @@ def test_committed_reference_matches_tool_output():
     md = open(ROOT + "/references/x-algorithm.md", encoding="utf-8").read()
     pin = json.load(open(ROOT + "/references/weights.json", encoding="utf-8"))["commit"]
     assert pin in md
+    # Structure only. The weekly tracker rewrites this file; a value assertion here would fail
+    # (and block the tracker's commit) the first time upstream changes a weight.
     v = weights.previous_values(md)
-    assert v["FavoriteWeight"] == 0.66 and v["ReplyWeight"] == 5.0
+    assert len(v) >= 20
+    assert {"ReplyWeight", "FavoriteWeight", "ReportWeight", "ShareViaCopyLinkWeight"} <= set(v)
+    assert all(isinstance(x, float) for x in v.values())
