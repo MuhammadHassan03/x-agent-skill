@@ -3,63 +3,146 @@ on:
   schedule:
     - cron: "17 6 * * 1"
   workflow_dispatch:
-permissions:
-  contents: write
-  issues: write
+# No workflow-wide grant. Each job asks for exactly what it needs.
+permissions: {}
 concurrency:
   group: algo-watch
   cancel-in-progress: false
 jobs:
-  watch:
+  # Job 1: read-only. Fetches upstream text, parses it, runs the tests and stages the result as data.
+  # It never holds a write token and does not persist the checkout credential, so nothing it runs
+  # (the parser, pytest and its dependencies) can push or open an issue.
+  check:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GITHUB_TOKEN: ${{ github.token }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      action: ${{ steps.decide.outputs.action }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.13"
-      # Exit 0: nothing changed. 10: changes, validated and written. 2: file moved or parse failed.
-      # 3: validation failed (weight key missing, non-numeric weight, or a weight moved more than 10x).
-      # On 2 or 3 nothing is written and nothing is committed; an issue is opened instead.
+      # Exit 0: nothing changed. 10: changes, validated and written. 2: file moved, parse failed or any
+      # unexpected error. 3: validation failed (weight key missing, non-numeric weight, or a weight moved more than 10x).
       - name: Run algo_watch
         id: watch
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # read-only here; only sent to api.github.com
         run: |
           set +e
           python tools/algo_watch.py --write --diff-out "$RUNNER_TEMP/algo-diff.md" 2> "$RUNNER_TEMP/algo-err.txt"
-          code=$?
-          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "code=$?" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/algo-err.txt" >&2
           exit 0
       - name: Run the tests on the updated references
+        id: tests
         if: steps.watch.outputs.code == '10'
+        continue-on-error: true
         run: |
-          python -m pip install pytest
+          python -m pip install --require-hashes --no-deps -r tools/algo-ci-requirements.txt
           python -m pytest -q
-      - name: Commit the validated change to the default branch
-        if: steps.watch.outputs.code == '10'
+      - name: Decide and stage
+        id: decide
+        if: always()
+        env:
+          CODE: ${{ steps.watch.outputs.code }}
+          TESTS: ${{ steps.tests.outcome }}
         run: |
-          date=$(date -u +%F)
-          n=$(grep -m1 -oE '[0-9]+ changes?' "$RUNNER_TEMP/algo-diff.md" | grep -oE '^[0-9]+' || echo 0)
-          sha=$(jq -r '.commit' references/weights.json)
-          cdate=$(jq -r '.commit_date' references/weights.json)
-          {
-            echo "weights: $date, $n changes (upstream ${sha:0:7}, $cdate)"
-            echo
-            echo "Upstream commit: $sha"
-            echo "Upstream commit date: $cdate"
-            echo "Checks passed: weight keys all present, weight values numeric, no weight moved more than 10x."
-            echo
-            cat "$RUNNER_TEMP/algo-diff.md"
-          } > "$RUNNER_TEMP/commit-msg.txt"
+          mkdir -p stage/references
+          touch "$RUNNER_TEMP/algo-err.txt" "$RUNNER_TEMP/algo-diff.md"
+          if [ "$CODE" = "10" ] && [ "$TESTS" = "success" ]; then
+            action=commit
+            date=$(date -u +%F)
+            n=$(grep -m1 -oE '[0-9]+ changes?' "$RUNNER_TEMP/algo-diff.md" | grep -oE '^[0-9]+' || echo 0)
+            sha=$(jq -r '.commit' references/weights.json)
+            cdate=$(jq -r '.commit_date' references/weights.json)
+            {
+              echo "weights: $date, $n changes (upstream ${sha:0:7}, $cdate)"
+              echo
+              echo "Upstream commit: $sha"
+              echo "Upstream commit date: $cdate"
+              echo "Checks passed: weight keys all present, weight values numeric, no weight moved more than 10x."
+              echo
+              cat "$RUNNER_TEMP/algo-diff.md"
+            } > stage/commit-msg.txt
+            cp references/weights.json references/x-algorithm.md references/ALGO-CHANGELOG.md stage/references/
+            cp README.md stage/README.md
+          elif [ "$CODE" = "0" ]; then
+            action=none
+          else
+            action=issue
+            if [ "$CODE" = "10" ]; then
+              echo "FAILURE: the tests failed on the updated references; nothing was committed." >> "$RUNNER_TEMP/algo-err.txt"
+            fi
+          fi
+          echo "$CODE" > stage/code
+          head -c 4000 "$RUNNER_TEMP/algo-err.txt" > stage/algo-err.txt
+          head -c 20000 "$RUNNER_TEMP/algo-diff.md" > stage/algo-diff.md
+          echo "action=$action" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: algo-stage
+          path: stage
+          retention-days: 3
+          if-no-files-found: warn
+
+  # Job 2: the only job with contents: write. It runs no pip, no pytest and nothing from the artifact.
+  # It checks the staged files against an allowlist, then copies them and pushes.
+  commit:
+    needs: check
+    if: needs.check.outputs.action == 'commit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: algo-stage
+          path: ${{ runner.temp }}/stage
+      - name: Verify the staged update (trusted code from the base checkout, stage treated as data)
+        run: python tools/algo_watch.py --verify-tree "$RUNNER_TEMP/stage"
+      - name: Commit the validated change to the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          cp "$RUNNER_TEMP/stage/references/weights.json" "$RUNNER_TEMP/stage/references/x-algorithm.md" "$RUNNER_TEMP/stage/references/ALGO-CHANGELOG.md" references/
+          cp "$RUNNER_TEMP/stage/README.md" README.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add references README.md
-          git commit -s -F "$RUNNER_TEMP/commit-msg.txt"
-          git push origin "HEAD:${{ github.event.repository.default_branch }}"
-      - name: Open an issue, commit nothing (file moved, parse failed, or validation failed)
-        if: steps.watch.outputs.code == '2' || steps.watch.outputs.code == '3'
+          git commit -s -F "$RUNNER_TEMP/stage/commit-msg.txt"
+          git push origin "HEAD:${DEFAULT_BRANCH}"
+
+  # Job 3: issues only. No checkout, no repository code.
+  report:
+    needs: check
+    if: always() && needs.check.outputs.action != 'commit' && needs.check.outputs.action != 'none'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        continue-on-error: true
+        with:
+          name: algo-stage
+          path: ${{ runner.temp }}/stage
+      - name: Open an issue, commit nothing
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           open=$(gh issue list --state open --label algo-watch --json number --jq 'length')
           if [ "$open" != "0" ]; then
@@ -67,24 +150,25 @@ jobs:
             exit 0
           fi
           gh label create algo-watch --description "Ranking-parameter tracker" --color 6e7681 2>/dev/null || true
-          if [ "${{ steps.watch.outputs.code }}" = "3" ]; then
-            title="algo-watch: validation failed, nothing committed ($(date -u +%F))"
-            what="The weekly algo-watch run fetched param.rs but the update failed validation, so nothing was committed."
-          else
-            title="algo-watch: could not read param.rs ($(date -u +%F))"
-            what="The weekly algo-watch run could not read param.rs, so nothing was committed."
-          fi
+          stage="$RUNNER_TEMP/stage"
+          code=$(cat "$stage/code" 2>/dev/null || echo unknown)
+          case "$code" in
+            3) title="algo-watch: validation failed, nothing committed ($(date -u +%F))"
+               what="The weekly algo-watch run fetched param.rs but the update failed validation, so nothing was committed." ;;
+            *) title="algo-watch: run failed, nothing committed ($(date -u +%F))"
+               what="The weekly algo-watch run could not finish (exit code $code), so nothing was committed." ;;
+          esac
           {
             echo "$what"
             echo
-            echo '```'
-            cat "$RUNNER_TEMP/algo-err.txt"
-            echo '```'
-            if [ -f "$RUNNER_TEMP/algo-diff.md" ]; then
+            echo '``````'
+            head -c 4000 "$stage/algo-err.txt" 2>/dev/null || echo "(no error output was staged)"
+            echo '``````'
+            if [ -s "$stage/algo-diff.md" ]; then
               echo
-              cat "$RUNNER_TEMP/algo-diff.md"
+              head -c 20000 "$stage/algo-diff.md"
             fi
             echo
-            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "Run: $RUN_URL"
           } > "$RUNNER_TEMP/issue.md"
           gh issue create --title "$title" --label algo-watch --body-file "$RUNNER_TEMP/issue.md"

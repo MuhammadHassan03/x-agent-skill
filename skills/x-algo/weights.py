@@ -41,7 +41,7 @@ STATIC_VERIFIED_COMMIT = "74d49a4ffb398949a5f9312f828d7112d7d31f00"
 STATIC_VERIFIED_DATE = "2026-10-21"
 
 PARAM_RE = re.compile(
-    r"param!\(\s*(\w+)\s*,\s*(\w+)\s*,\s*\"([^\"]+)\"\s*,\s*(-?[0-9][0-9_]*(?:\.[0-9_]+)?|true|false)\s*,?\s*\)\s*;",
+    r"param!\(\s*(\w+)\s*,\s*(\w+)\s*,\s*\"([^\"]+)\"\s*,\s*(-?[0-9][0-9_]*(?:\.[0-9_]+)?|true|false)\s*(?:,\s*)?\)\s*;",
     re.S,
 )
 

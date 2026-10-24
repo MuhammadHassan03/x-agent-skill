@@ -120,6 +120,6 @@ def test_cli_exit_code_3_and_diff_file(tmp_path):
 
 def test_workflow_validates_then_commits_with_upstream_details():
     wf = open(ROOT + "/.github/workflows/algo-watch.yml", encoding="utf-8").read()
-    assert "== '3'" in wf and "gh issue create" in wf and "--body-file" in wf
+    assert "3) title=" in wf and "validation failed" in wf and "gh issue create" in wf and "--body-file" in wf
     assert "upstream" in wf and "commit_date" in wf
     assert "pull-requests" not in wf and "gh pr create" not in wf

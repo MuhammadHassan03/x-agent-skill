@@ -44,6 +44,7 @@ import os
 import re
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -57,7 +58,15 @@ PATH = "home-mixer/params/param.rs"
 SOURCE_URL = f"https://github.com/{REPO}/blob/main/{PATH}"
 MIN_PARAMS = 50      # the file has ~190; far fewer means the format changed
 MIN_WEIGHTS = 5
-PARAM_RE = re.compile(r"param!\(\s*(\w+)\s*,\s*((?:[^,<\"]|<[^<>]*>)+?)\s*,\s*\"([^\"]+)\"\s*,\s*(.*?)\)\s*;", re.S)
+MAX_BYTES = 1024 * 1024   # the real file is a few tens of KB; anything near this is not param.rs
+MAX_VALUE = 2000          # longest default one param! block may carry; a longer block fails the completeness check
+# Linear-time on hostile input: the type starts with a non-space (no whitespace ambiguity with the \s* before it),
+# and the value is bounded, so an unclosed block cannot make every later start scan to the end of the file.
+PARAM_RE = re.compile(r"param!\(\s*(\w+)\s*,\s*((?:[^\s,<\"]|<[^<>]*>)(?:[^,<\"]|<[^<>]*>)*)\s*,\s*\"([^\"]+)\"\s*,\s*(.{0,%d}?)\)\s*;" % MAX_VALUE, re.S)
+SHA_RE = re.compile(r"[0-9a-f]{40}")
+DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z")
+ALLOWED_FILES = ("references/weights.json", "references/x-algorithm.md", "references/ALGO-CHANGELOG.md", "README.md")
+STAGE_EXTRA = ("commit-msg.txt", "algo-diff.md", "algo-err.txt", "code")
 BLOCK_RE = re.compile(r"(?m)^param!\(")
 NUM_RE = re.compile(r"-?[0-9][0-9_]*(?:\.[0-9_]+)?")
 START = "<!-- algo-changelog:start -->"
@@ -108,7 +117,8 @@ def validate_update(prev: Optional[Dict[str, Dict[str, Any]]], new: Dict[str, Di
     problems: List[str] = []
     for name, v in sorted(new.items()):
         if is_weight(name) and not is_number(v["value"]):
-            problems.append(f"weight {name} is not numeric: {v['value']!r}")
+            shown = repr(v["value"]).replace("`", "'")
+            problems.append(f"weight {name} is not numeric: {shown[:80]}")
     if prev:
         for name in sorted(n for n in prev if is_weight(n)):
             if name not in new:
@@ -255,28 +265,54 @@ def update_readme(readme: str, changelog_text: str) -> bool:
     return new != t
 
 
+class _SameHostRedirect(urllib.request.HTTPRedirectHandler):
+    """Refuse a redirect to another host: a bearer token must never follow one."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # type: ignore[no-untyped-def]
+        if urllib.parse.urlsplit(newurl).netloc != urllib.parse.urlsplit(req.full_url).netloc:
+            raise WatchError(f"refusing a redirect from {urllib.parse.urlsplit(req.full_url).netloc} "
+                             f"to {urllib.parse.urlsplit(newurl).netloc}")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_OPENER = urllib.request.build_opener(_SameHostRedirect)
+
+
+def _open(req: urllib.request.Request, timeout: int):  # type: ignore[no-untyped-def]
+    return _OPENER.open(req, timeout=timeout)
+
+
 def _get(url: str, token: Optional[str]) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": "x-agent-skill-algo-watch", "Accept": "application/vnd.github+json"})
-    if token:
+    # Only the API host gets the token (it raises the rate limit). raw.githubusercontent.com serves public files.
+    if token and urllib.parse.urlsplit(url).netloc == "api.github.com":
         req.add_header("Authorization", f"Bearer {token}")
     try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            return r.read()
+        with _open(req, 30) as r:
+            data = r.read(MAX_BYTES + 1)
     except urllib.error.HTTPError as exc:
         raise WatchError(f"HTTP {exc.code} fetching {url}") from exc
     except (urllib.error.URLError, TimeoutError) as exc:
         raise WatchError(f"network error fetching {url}: {exc}") from exc
+    if len(data) > MAX_BYTES:
+        raise WatchError(f"response from {url} is larger than {MAX_BYTES} bytes; refusing to parse it.")
+    return data
 
 
 def fetch(token: Optional[str] = None) -> Tuple[str, str, str]:
     """Return (text, commit_sha, commit_date) for the file at the default branch."""
     repo = json.loads(_get(f"https://api.github.com/repos/{REPO}", token))
-    branch = repo.get("default_branch") or "main"
+    branch = urllib.parse.quote(str(repo.get("default_branch") or "main"), safe="")
     commits = json.loads(_get(f"https://api.github.com/repos/{REPO}/commits?path={PATH}&sha={branch}&per_page=1", token))
     if not commits:
         raise WatchError(f"{PATH} has no commits on {branch}: the file moved or was deleted.")
     sha = commits[0]["sha"]
     date = commits[0]["commit"]["committer"]["date"]
+    # These strings reach a URL, commit messages and the README: accept nothing but the exact shapes.
+    if not isinstance(sha, str) or not SHA_RE.fullmatch(sha):
+        raise WatchError("the GitHub API returned a commit hash that is not 40 hex characters.")
+    if not isinstance(date, str) or not DATE_RE.fullmatch(date):
+        raise WatchError("the GitHub API returned a commit date that is not an ISO UTC timestamp.")
     try:
         text = _get(f"https://raw.githubusercontent.com/{REPO}/{sha}/{PATH}", token).decode("utf-8")
     except WatchError as exc:
@@ -284,8 +320,66 @@ def fetch(token: Optional[str] = None) -> Tuple[str, str, str]:
     return text, sha, date
 
 
+def verify_tree(base_root: str, stage: str) -> List[str]:
+    """Check a staged update before the privileged job copies it into the repository.
+
+    The staged files were produced by a job that parsed upstream text and ran third-party code. This runs
+    in the job that holds the write token, from the trusted checked-out base, and treats the stage as data:
+    only the four generated files and the known side files may exist, none may be a link or large, the
+    weights must still validate against the base snapshot, and README.md may differ from the base only
+    inside the changelog markers. Returns the problems (empty means safe to copy).
+    """
+    problems: List[str] = []
+    allowed = set(ALLOWED_FILES) | set(STAGE_EXTRA)
+    found = set()
+    for dirpath, dirs, files in os.walk(stage, followlinks=False):
+        for name in dirs + files:
+            full = os.path.join(dirpath, name)
+            rel = os.path.relpath(full, stage).replace(os.sep, "/")
+            if os.path.islink(full):
+                problems.append(f"{rel} is a link")
+            elif os.path.isfile(full):
+                found.add(rel)
+                if rel not in allowed:
+                    problems.append(f"{rel} is not an allowed file")
+                elif os.path.getsize(full) > MAX_BYTES:
+                    problems.append(f"{rel} is larger than {MAX_BYTES} bytes")
+    for rel in ALLOWED_FILES:
+        if rel not in found:
+            problems.append(f"{rel} is missing from the stage")
+    if problems:
+        return problems
+    try:
+        snap = read_json(os.path.join(stage, "references", "weights.json")) or {}
+        prev = read_json(os.path.join(base_root, "references", "weights.json"))
+        new = snap["params"]
+        problems += validate_update(prev["params"] if prev else None, new)
+        if not SHA_RE.fullmatch(str(snap.get("commit", ""))):
+            problems.append("weights.json has no 40-hex upstream commit")
+        if len(new) < MIN_PARAMS:
+            problems.append(f"weights.json has only {len(new)} params")
+        base_readme = open(os.path.join(base_root, "README.md"), encoding="utf-8").read()
+        new_readme = open(os.path.join(stage, "README.md"), encoding="utf-8").read()
+        if START not in base_readme or END not in base_readme or START not in new_readme or END not in new_readme:
+            problems.append("README.md lost its changelog markers")
+        else:
+            outside = lambda t: (t[:t.index(START)], t[t.index(END) + len(END):])  # noqa: E731
+            if outside(base_readme) != outside(new_readme):
+                problems.append("README.md differs from the base outside the changelog markers")
+        for rel in ("references/x-algorithm.md", "references/ALGO-CHANGELOG.md"):
+            open(os.path.join(stage, rel), encoding="utf-8").read()
+        msg = open(os.path.join(stage, "commit-msg.txt"), encoding="utf-8").read() if os.path.exists(os.path.join(stage, "commit-msg.txt")) else ""
+        if not msg.strip() or len(msg) > 60000 or len(msg.splitlines()[0]) > 120:
+            problems.append("commit-msg.txt is missing, too long, or has an over-long subject")
+    except (KeyError, TypeError, ValueError, OSError) as exc:
+        problems.append(f"stage could not be read: {type(exc).__name__}")
+    return problems
+
+
 def run(text: str, commit: str, commit_date: str, root: str, today: str, write: bool,
         diff_out: Optional[str] = None) -> Dict[str, Any]:
+    if len(text.encode("utf-8")) > MAX_BYTES:
+        raise WatchError(f"param file is larger than {MAX_BYTES} bytes; refusing to parse it.")
     new = parse_all(text)
     check_complete(text, new)
     validate(new)
@@ -340,7 +434,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--write", action="store_true", help="update references/ and README.md")
     ap.add_argument("--diff-out", help="write the diff markdown here")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--verify-tree", metavar="STAGE", help="check a staged update against --root, print problems, exit 3 if any")
     args = ap.parse_args(argv)
+    if args.verify_tree:
+        problems = verify_tree(args.root, args.verify_tree)
+        for pr in problems:
+            print(f"  - {pr}", file=sys.stderr)
+        print("stage rejected" if problems else "stage ok", file=sys.stderr)
+        return 3 if problems else 0
     try:
         datetime.date.fromisoformat(args.today)
         if args.param_file:
@@ -360,6 +461,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 3
     except (WatchError, OSError, ValueError) as exc:
         print(f"FAILURE: {exc}", file=sys.stderr)
+        return 2
+    except Exception as exc:  # noqa: BLE001  anything unexpected must reach the issue step, not exit 1 silently
+        print(f"FAILURE: unexpected {type(exc).__name__}: {str(exc)[:200]}", file=sys.stderr)
         return 2
     if args.json:
         print(json.dumps({k: v for k, v in res.items() if k != "diff"}, indent=2, default=str))
