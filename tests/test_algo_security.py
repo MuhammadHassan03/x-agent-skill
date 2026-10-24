@@ -265,6 +265,15 @@ def test_the_job_that_runs_third_party_code_cannot_push_and_does_not_keep_the_cr
     assert "--require-hashes" in check
 
 
+def test_tracker_commits_are_named_and_only_touch_the_allowed_files():
+    commit = split_jobs(wf("algo-watch.yml"))["commit"]
+    assert 'user.name "x-agent-skill algo-watch"' in commit
+    assert "41898282+github-actions[bot]@users.noreply.github.com" in commit
+    assert "git add references README.md" in commit
+    assert all(not f.startswith(("skills/", "tools/")) for f in algo_watch.ALLOWED_FILES)
+    assert "never touch `skills/` or `tools/`" in open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+
+
 def test_algo_ci_requirements_are_hash_pinned():
     lines = [l for l in open(os.path.join(ROOT, "tools", "algo-ci-requirements.txt"), encoding="utf-8").read().splitlines() if l and not l.startswith("#")]
     assert lines and all(re.fullmatch(r"[\w.-]+==[\w.]+ --hash=sha256:[0-9a-f]{64}", l) for l in lines)
