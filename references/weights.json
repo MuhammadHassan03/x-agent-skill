@@ -1,7 +1,7 @@
 {
- "commit": "7f2ca2b914cadac591ea7fceec0c477e473d3dee",
- "commit_date": "2026-10-21T00:52:08Z",
- "fetched": "2026-10-21",
+ "commit": "6258a1549ef808be88fba83d3b2d58364b587ee0",
+ "commit_date": "2026-10-24T03:22:45Z",
+ "fetched": "2026-10-24",
  "params": {
   "AdsBlenderType": {
    "key": "rust_home_mixer_ads_blender",
@@ -158,6 +158,11 @@
    "type": "bool",
    "value": true
   },
+  "EnableAdsFunnelTrace": {
+   "key": "rust_home_mixer_enable_ads_funnel_trace",
+   "type": "bool",
+   "value": true
+  },
   "EnableAdsInjectionLogging": {
    "key": "rust_home_mixer_enable_ads_injection_logging",
    "type": "bool",
@@ -221,7 +226,7 @@
   "EnableFairShareRanking": {
    "key": "rust_home_mixer_enable_fair_share_ranking",
    "type": "bool",
-   "value": false
+   "value": true
   },
   "EnableFavHoldout": {
    "key": "rust_home_mixer_enable_fav_holdout",
@@ -303,6 +308,11 @@
    "type": "bool",
    "value": false
   },
+  "EnableNewUserSoftNsfwFilter": {
+   "key": "rust_home_mixer_enable_new_user_soft_nsfw_filter",
+   "type": "bool",
+   "value": false
+  },
   "EnablePhoenixMOESource": {
    "key": "rust_home_mixer_enable_phoenix_moe_source",
    "type": "bool",
@@ -362,6 +372,11 @@
    "key": "rust_home_mixer_enable_ranking",
    "type": "bool",
    "value": true
+  },
+  "EnableRecentSearchQueriesHydration": {
+   "key": "rust_home_mixer_enable_recent_search_queries_hydration",
+   "type": "bool",
+   "value": false
   },
   "EnableResponseDiversityStatsExperimentBucket": {
    "key": "rust_home_mixer_enable_response_diversity_stats_experiment_bucket",
@@ -446,7 +461,7 @@
   "EnableVideoCarouselCandidatesLogging": {
    "key": "rust_home_mixer_enable_video_carousel_candidates_logging",
    "type": "bool",
-   "value": false
+   "value": true
   },
   "EnableVideoCarouselEmbeddingDedupe": {
    "key": "rust_home_mixer_enable_video_carousel_embedding_dedupe",
@@ -592,6 +607,11 @@
    "key": "rust_home_mixer_new_user_min_engagement_threshold",
    "type": "f64",
    "value": 0.0
+  },
+  "NewUserSoftNsfwFilterMaxAccountAgeSecs": {
+   "key": "rust_home_mixer_new_user_soft_nsfw_filter_max_account_age_secs",
+   "type": "u64",
+   "value": 86400
   },
   "NotDwelledWeight": {
    "key": "rust_home_mixer_not_dwelled_weight",
@@ -806,7 +826,7 @@
   "ShadowTrafficPhoenixClusterRates": {
    "key": "rust_home_mixer_shadow_traffic_phoenix_cluster_rates",
    "type": "Vec<String>",
-   "value": "vec![]"
+   "value": "vec![\"Experiment18Fou:0.3\".to_string()]"
   },
   "ShadowTrafficPhoenixClustersList": {
    "key": "rust_home_mixer_shadow_traffic_phoenix_clusters_list",
