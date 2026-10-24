@@ -108,6 +108,9 @@ python3 skills/x-post/postscore.py demo/samples/bait.txt    # the same tool bloc
 own text works the same way: save it to a file (any encoding PowerShell writes is fine) or pipe it
 in with `-` as the file name. Then open Claude Code in any folder and say "write a post about ...".
 
+For a full walk through one post, from install to the FIRST REPLY block, with real tool output, read
+the [/x-post tutorial](docs/tutorial-x-post.md).
+
 ## The twelve
 
 | command | what it does | tool |
