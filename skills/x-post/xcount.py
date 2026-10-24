@@ -62,6 +62,7 @@ URL_RE = re.compile(
     r"|(?<![@\w./-])(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:" + _TLDS + r")\b(?:/[^\s<>\"]*)?)"
 )
 _TRAILING = ".,;:!?)]}'\""
+_CLOSERS = {")": "(", "]": "[", "}": "{"}
 
 # One emoji sequence, matched greedily so it weighs 2 in total.
 _MOD = "[\U0001F3FB-\U0001F3FF]"
@@ -97,6 +98,10 @@ def _url_spans(text: str) -> List[Tuple[int, int]]:
     for m in URL_RE.finditer(text):
         start, end = m.start(), m.end()
         while end > start and text[end - 1] in _TRAILING:
+            ch = text[end - 1]
+            body = text[start:end - 1]
+            if ch in _CLOSERS and body.count(_CLOSERS[ch]) > body.count(ch):
+                break          # balanced, e.g. .../Foo_(bar): the bracket belongs to the URL
             end -= 1
         if end > start:
             spans.append((start, end))

@@ -87,12 +87,23 @@ STOP = set("the a an and or but if of to in on for with at by from as is are was
            "just very really more most than then there here what which who whom how why when where about into over because since while after before also got get".split())
 
 
+# Scripts written without spaces between words: match on character bigrams instead of whole runs.
+NO_SPACE_SCRIPT = re.compile("[\u0e00-\u0e7f\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af\uf900-\ufaff]")
+
+
 def words(text: str) -> List[str]:
-    return re.findall(r"[a-z0-9']+", text.lower())
+    """Lower-cased word tokens in any script. Spaceless scripts (CJK, Thai) yield character bigrams."""
+    out: List[str] = []
+    for tok in re.findall(r"[^\W_]+(?:['\u2019][^\W_]+)?", text.lower()):
+        if NO_SPACE_SCRIPT.search(tok):
+            out.extend([tok] if len(tok) < 2 else [tok[i:i + 2] for i in range(len(tok) - 1)])
+        else:
+            out.append(tok)
+    return out
 
 
 def content(text: str) -> Set[str]:
-    return {w for w in words(text) if w not in STOP and len(w) > 2}
+    return {w for w in words(text) if w not in STOP and (len(w) > 2 or NO_SPACE_SCRIPT.search(w))}
 
 
 def lint(reply: str, parent: Optional[str] = None, prior_in_thread: int = 0) -> Dict[str, object]:

@@ -140,11 +140,11 @@
     {"id": "staged-question", "name": "Rhetorical one-line question", "regex": "(?im)^(?:the (?:result|catch|kicker|truth|reality|problem|answer)|why|how|what happened|the secret)\\?\\s*$", "fix": "Delete the question and state the answer."},
     {"id": "numbered-emoji", "name": "Numbered emoji bullets", "regex": "[0-9]\\uFE0F?\\u20E3", "fix": "Use plain numbers or no list. Numbered emoji reads as engagement farming."},
     {"id": "emoji-bullets", "name": "Emoji bullet list", "regex": "(?m)^[ \\t]*[\\u2705\\u2714\\u27A1\\u2B50\\u2757\\U0001F449\\U0001F525\\U0001F4A1\\U0001F680]", "fix": "Plain hyphens or sentences."},
-    {"id": "hashtag-wall", "name": "Hashtag wall (3 or more)", "regex": "(?:#\\w+[\\s,]*){3,}", "fix": "Zero or one hashtag. More reads as spam and is no longer how X discovery works."},
+    {"id": "hashtag-wall", "name": "Hashtag wall (3 or more)", "regex": "(?:#(?=\\w*[^\\W\\d_])\\w+[\\s,]*){3,}", "fix": "Zero or one hashtag. More reads as spam and is no longer how X discovery works."},
     {"id": "shouted", "name": "Three or more shouted words in a row", "regex": "\\b[A-Z]{3,}\\b(?:\\s+\\b[A-Z]{3,}\\b){2,}", "fix": "Lower case it. The claim should carry the weight."},
     {"id": "staged-reveal", "name": "Staged reveal line (\"Here's what I learned:\")", "regex": "(?im)^here'?s (?:what|how|why|the)\\b[^\\n]{0,60}:\\s*$", "fix": "Start with the thing itself."},
     {"id": "bait", "name": "Engagement bait", "regex": "(?i)\\b(?:(?:rt|retweet|repost|like) (?:if|and)|follow (?:me )?for more|tag (?:someone|a friend)|bookmark this|share if)\\b", "fix": "Cut it. Also an Original Content Rewards ineligibility problem (engagement solicitation)."},
-    {"id": "thread-opener", "name": "Thread opener as the hook", "regex": "(?i)^\\s*(?:a )?thread\\b|^\\s*1\\s*/\\s*\\d*\\s", "fix": "Make post one a claim that works alone."},
+    {"id": "thread-opener", "name": "Thread opener as the hook", "regex": "(?i)^\\s*(?:a )?thread\\b|^\\s*1\\s*/(?!\\s*\\d)|^\\s*1\\s*/\\s*\\d+\\s*(?:[:.)-]|$)", "fix": "Make post one a claim that works alone."},
     {"id": "one-liner-staircase", "name": "Staircase of very short lines", "regex": "(?m)(?:^[^\\n]{1,28}\\n){4,}", "fix": "Join some of them. A staircase of fragments is a known formatting tic."},
     {"id": "in-a-world", "name": "\"Imagine a world where\" framing", "regex": "(?i)\\b(?:imagine a world where|in a world where)\\b", "fix": "Cut the frame. Say what you did."}
   ]

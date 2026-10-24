@@ -58,7 +58,7 @@ HOOKS_JSON = os.path.join(HERE, "hooks.json")
 
 PLACEHOLDER_RE = re.compile(r"\{\{[^}]*\}\}")
 URL_RE = xcount.URL_RE
-HASHTAG_RE = re.compile(r"(?<!\w)#\w+")
+HASHTAG_RE = re.compile(r"(?<!\w)#(?=\w*[^\W\d_])\w+")
 NUMBER_RE = re.compile(r"(?<![\w])(?:[$£€]\s?)?\d[\d,.]*(?:\s?(?:%|k|m|x|hrs?|days?|weeks?|months?|years?))?", re.I)
 PROPER_RE = re.compile(r"(?<![.!?]\s)(?<!^)\b[A-Z][a-zA-Z]{2,}\b")
 FIRST_PERSON_RE = re.compile(r"\b(i|i'm|i've|i'd|my|me|we|our)\b", re.I)
@@ -79,7 +79,7 @@ BAIT = [
 BAIT_RES = [(re.compile(p, re.I), name) for p, name in BAIT]
 
 BAD_OPENERS = [
-    (r"^\s*(a )?thread\b|\U0001F9F5|^\s*1\s*/\s*\d*\b", "thread opener as the hook"),
+    (r"^\s*(a )?thread\b|\U0001F9F5|^\s*1\s*/(?!\s*\d)|^\s*1\s*/\s*\d+\s*(?:[:.)\-]|$)", "thread opener as the hook"),
     (r"^\s*(here'?s why|let me explain|let'?s talk about|i want to talk about|story time)\b", "throat-clearing opener"),
     (r"^\s*(breaking|just in|big news|huge)\b", "news-bait opener"),
     (r"^\s*(this is huge|game.?changer|let that sink in|here'?s the kicker)\b", "stock hype opener"),
@@ -225,7 +225,7 @@ def split_link(text: str) -> Tuple[str, str]:
         pieces.append(p[last:])
         rest = re.sub(r"[ \t]{2,}", " ", "".join(pieces)).strip()
         rest = re.sub(r"\s+([,.;:!?])", r"\1", rest)
-        if not re.sub(r"[\W_]+", "", rest):
+        if re.fullmatch(r"[\s.,;:!?_()\[\]\-\u2013\u2014]*", rest):
             continue
         if rest.endswith(":") and not label:
             label = rest

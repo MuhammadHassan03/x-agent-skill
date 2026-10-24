@@ -123,7 +123,7 @@ def build(text: str, number: bool = False, pack: bool = False, links_last: bool 
             pieces.append(p[last:])
             q = re.sub(r"[ \t]{2,}", " ", "".join(pieces)).strip()
             q = re.sub(r"\s+([,.;:!?])", r"\1", q)
-            if not re.sub(r"[\W_]+", "", q):
+            if re.fullmatch(r"[\s.,;:!?_()\[\]\-\u2013\u2014]*", q):
                 continue
             if q.endswith(":") and label is None:
                 label = q
@@ -135,7 +135,10 @@ def build(text: str, number: bool = False, pack: bool = False, links_last: bool 
             cleaned.append(p)
     if not cleaned and links:
         raise ValueError("draft contains only links; nothing to thread")
-    link_line = ((label or "Links:") + "\n" + "\n".join(dict.fromkeys(links))) if links else ""
+    urls = "\n".join(dict.fromkeys(links))
+    # The FIRST REPLY block carries the introducing line if there was one, else just the URLs
+    # (same shape as postscore.py --split-link). Only --links-last needs a label inside the thread.
+    link_line = ((label + "\n" + urls) if label else urls) if links else ""
     reserve = 8 if number else 0     # room for "12/12 "
     budget = LIMIT - reserve
     posts: List[str] = []
@@ -148,6 +151,8 @@ def build(text: str, number: bool = False, pack: bool = False, links_last: bool 
                 posts.append(piece)
     first_reply = ""
     if link_line and links_last:
+        if not label:
+            link_line = "Links:\n" + link_line
         if posts and weighted(posts[-1] + "\n\n" + link_line) <= budget:
             posts[-1] = posts[-1] + "\n\n" + link_line
         else:

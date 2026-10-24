@@ -57,7 +57,8 @@ PATH = "home-mixer/params/param.rs"
 SOURCE_URL = f"https://github.com/{REPO}/blob/main/{PATH}"
 MIN_PARAMS = 50      # the file has ~190; far fewer means the format changed
 MIN_WEIGHTS = 5
-PARAM_RE = re.compile(r"param!\(\s*(\w+)\s*,\s*([^,]+?)\s*,\s*\"([^\"]+)\"\s*,\s*(.*?)\)\s*;", re.S)
+PARAM_RE = re.compile(r"param!\(\s*(\w+)\s*,\s*((?:[^,<\"]|<[^<>]*>)+?)\s*,\s*\"([^\"]+)\"\s*,\s*(.*?)\)\s*;", re.S)
+BLOCK_RE = re.compile(r"(?m)^param!\(")
 NUM_RE = re.compile(r"-?[0-9][0-9_]*(?:\.[0-9_]+)?")
 START = "<!-- algo-changelog:start -->"
 END = "<!-- algo-changelog:end -->"
@@ -135,6 +136,14 @@ def parse_all(text: str) -> Dict[str, Dict[str, Any]]:
     return out
 
 
+def check_complete(text: str, parsed: Dict[str, Dict[str, Any]]) -> None:
+    """Every param! block in the file must have been parsed; a silent skip hides a changed weight."""
+    blocks = len(BLOCK_RE.findall(text.replace("\r\n", "\n")))
+    if len(parsed) < blocks:
+        raise WatchError(f"parsed {len(parsed)} of {blocks} param! blocks: the file format changed, "
+                         "so some parameters would be silently ignored.")
+
+
 def is_weight(name: str) -> bool:
     return bool(re.search(r"(Weight|WeightBoost)$", name))
 
@@ -157,7 +166,10 @@ def compare(old: Dict[str, Dict[str, Any]], new: Dict[str, Dict[str, Any]]) -> L
         elif b is None:
             changes.append({"change": "removed", "name": name, "before": a["value"], "after": None, "weight": is_weight(name)})
         elif a["value"] != b["value"] or a["type"] != b["type"] or a["key"] != b["key"]:
-            changes.append({"change": "changed", "name": name, "before": a["value"], "after": b["value"], "weight": is_weight(name)})
+            same = a["value"] == b["value"]       # only the type or the key moved: show that, not two equal values
+            changes.append({"change": "changed", "name": name, "weight": is_weight(name),
+                            "before": a["value"] if not same else f"{a['type']} {a['key']}",
+                            "after": b["value"] if not same else f"{b['type']} {b['key']}"})
     changes.sort(key=lambda c: (not c["weight"], c["name"]))
     return changes
 
@@ -172,7 +184,12 @@ def fmt(v: Any) -> str:
     s = str(v)
     if s == "":
         return chr(34) * 2
-    return s if len(s) <= 60 else s[:57] + "..."
+    s = s if len(s) <= 60 else s[:57] + "..."
+    if isinstance(v, str):
+        # Upstream strings reach README, commit messages and issues: neutralise markdown and HTML.
+        s = s.replace("`", "'").replace("|", "\\|").replace("<", "(").replace(">", ")")
+        return "`" + s + "`"
+    return s
 
 
 def render_diff(changes: List[Dict[str, Any]], date: str, commit: str, commit_date: str, baseline: bool = False,
@@ -270,6 +287,7 @@ def fetch(token: Optional[str] = None) -> Tuple[str, str, str]:
 def run(text: str, commit: str, commit_date: str, root: str, today: str, write: bool,
         diff_out: Optional[str] = None) -> Dict[str, Any]:
     new = parse_all(text)
+    check_complete(text, new)
     validate(new)
     ref = os.path.join(root, "references")
     wpath = os.path.join(ref, "weights.json")
